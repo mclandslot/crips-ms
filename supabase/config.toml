@@ -1,0 +1,17 @@
+[functions.reset-staff-password-by-email]
+verify_jwt = false
+
+[functions.delete-staff-by-id]
+verify_jwt = false
+
+[functions.cleanup-orphaned-staff]
+verify_jwt = false
+
+[functions.create-staff-account]
+verify_jwt = false
+
+[functions.set-staff-active]
+verify_jwt = false
+
+[functions.set-staff-role]
+verify_jwt = false
