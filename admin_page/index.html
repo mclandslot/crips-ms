@@ -1,0 +1,2843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+    <title>crips-ms</title>
+   <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="../data/confirmDialog.css">
+    <!-- installable app: manifest, home-screen icons, service worker -->
+    <meta name="theme-color" content="#1b4332">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CRIPS MS">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="../app-icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="../app-icons/apple-touch-icon.png">
+    <script src="../pwa.js"></script>
+</head>
+<body>
+
+      <!-- loading app -->
+     <div class="load-page" id="loader-page">
+        <div class="content-card">
+            <div class="loader">
+                <div class="inner-pin"></div>
+            </div>
+            <p>Loading App....</p>
+        </div>
+     </div>
+
+
+
+    <div class="side-bar">
+
+        <div class="admin-content">
+            <span class="CRIP-logo">
+                <img src="icons/CRIG-LOGO1.png" alt="picture" width="40px">
+            </span>
+            <div class="school-infor">
+                <h3 class="system-name">CRIPS MS</h3>
+               
+            </div>
+        </div>
+
+        <div class="navigation-container">
+
+            <div class="nav-card dash">
+                <ul>
+                    <li class="nav-links active" onclick="showHomeDash()"><i class="fa-solid fa-house"></i>Dashboard</li>
+                </ul>
+            </div>
+
+            <div class="nav-card">
+                <p>Students</p>
+                <ul>
+                    <li onclick="showAddStudentsPage()"><i class="fa-solid fa-pen"></i>Add Student</li>
+                    <li class="nav-links" onclick="showStudentDashboard()"><i class="fa-solid fa-users"></i> Manage Students</li>
+                    <!-- <li class="nav-links" onclick="showStudentPromotion()"><i class="fa-solid fa-users"></i> Promotion</li> -->
+                </ul>
+            </div>
+
+            <div class="nav-card">
+                <p>Teachers</p>
+                <ul>
+                    <li onclick="showAddTeacher()"><i class="fa-solid fa-pen"></i>Add Teacher</li>
+                    <li class="nav-links" onclick="showTeachersDashboard()"><i class="fa-solid fa-users"></i> Manage Teachers</li>
+                    <li onclick="cleanupOrphanedStaff()"><i class="fa-solid fa-broom"></i>Clean Orphan Logins</li>
+                </ul>
+            </div>
+
+             <div class="nav-card">
+                <p>Classes & Subjects</p>
+                <ul>
+                    <!-- <li class="nav-links" onclick="showAddClass()"><i class="fa-solid fa-pen"></i>Add Class</li> -->
+                    <!-- <li class="nav-links"><i class="fa-solid fa-book-bible"></i>Assign Class</li> -->
+                    <li class="nav-links" onclick="showClassDash()"><i class="fa-solid fa-address-book"></i>Class List</li>
+                    <li class="nav-links" onclick="openAssignSubjectsModal()"><i class="fa-solid fa-book-bible"></i>Assign Subject</li>
+                     <li class="nav-links" onclick="openAssignClassModal()"><i class="fa-solid fa-pen"></i>Assign Class Teacher</li>
+                     <li class="nav-links" onclick="assignedClassTeachersDash()"><i class="fa-solid fa-eye"></i>View Assign Teachers</li>
+                </ul>
+            </div>
+
+              <div class="nav-card">
+                <p>Marks Reports</p>
+                <ul>
+                    <!-- <li>CLass Lists</li> -->
+                    <li class="nav-links" onclick="showAssessmentDash()"><i class="fa-solid fa-file"></i> Assessment Sheet</li>
+                    <li class="nav-links" onclick="showScoreDash()"><i class="fa-solid fa-book-open"></i> Score Sheet</li>
+                    <li class="nav-links" onclick="showBroadSheet()"><i class="fa-solid fa-book-open"></i>Broad Sheets</li>
+                    <li class="nav-links" id="merit-nav-link" onclick="showMeritDash()"><i class="fa-solid fa-ranking-star"></i>Merit</li>
+                    <li class="nav-links" onclick="TerminalReportDashboardShow()"><i class="fa-solid fa-book-open"></i> Terminal Reports</li>
+                </ul>
+            </div> 
+            
+            <div class="nav-card">
+                <p>Academic year</p>
+                <ul>
+                    <li class="nav-links" id="academic-new-date-btn"><i class="fa-solid fa-pen"></i>Academic Year</li>
+                    <li class="nav-links" id="report-new-date-btn"><i class="fa-solid fa-business-time"></i>Report date</li>
+                    <li class="nav-links" onclick="showAddAttendance()"><i class="fa-solid fa-pen"></i>Add Total Days</li>
+                  
+                </ul>
+            </div>
+
+             <div class="nav-card">
+                <p>Term Review</p>
+                <ul>
+                    <li class="nav-links" onclick="showAttendanceStatus()"><i class="fa-solid fa-eye"></i>View Attendance</li>
+                    <li class="nav-links" onclick="showTermReview()"><i class="fa-solid fa-eye"></i>View Term</li>
+                </ul>
+            </div>
+
+            <div class="nav-card">
+                <p>Manage Account</p>
+                <ul>
+                    <li class="nav-links" id="open-reset-password-modal"><i class="fa-solid fa-eye"></i>Reset Password</li>
+                    <!-- <li class="nav-links" onclick="showTermReview()"><i class="fa-solid fa-eye"></i>View Term</li> -->
+                </ul>
+            </div>
+
+            <!-- id="open-reset-password-modal" -->
+
+        </div>
+
+
+         <div class="active-person">
+           <div class="profile-active-green-card">
+             <div class="profile-picture"></div>
+            <span class="color-green"></span>
+           </div>
+
+            <div class="active-person-card">
+                <h3 class="active-person-name" id="logged-admin-name"></h3>
+                <p class="email-text" id="logged-admin-email"></p>
+            </div>
+            </div>
+
+    </div>
+
+
+
+      <!-- accounts box model -->
+    <div class="account-model-box" id="account-model-box">
+        <div class="card-p">
+            <p><i class="fa-solid fa-circle-user"></i>Accounts</p>
+        </div>
+        <div class="account-links">
+            <ul>
+                <li id="darkToggle"><i class="fa-solid fa-circle-half-stroke"></i>Change theme</li>
+                <li id="password-body"><i class="fa-solid fa-lock"></i>Change password</li>
+                <li id="log-out-body"><i class="fa-solid fa-right-to-bracket"></i>Log out</li>
+                <li id="close-accounts"><i class="fa-solid fa-xmark"></i>Close</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- notification popup -->
+    <div class="alert-notification" id="alert-notification">
+      <div class="flex-row-alert">
+        <h4>Notification</h4>
+        <span class="span-notice-box" id="close-x-notice"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <ul id="admin-alerts-list">
+        <li class="alert-empty">Checking.......</li>
+      </ul>
+    </div>
+
+
+
+
+    <!-- main dashboard content -->
+    <div class="main-dashboard">
+
+          <div class="dashboard-card-header">
+                            <div class="left-header">
+                                <div class="icon-menu" id="toggle-in-menu">
+                                <!-- <i class="fa-solid fa-bars"></i> -->
+                            </div>
+                            <h3 class="dash-text"  id="show-user-admin-full-name"></h3>
+                            </div>
+                            <div class="right-card-icons">
+                                <div class="small-account-notes-icon">
+                                    <i class="fa-solid fa-circle-user" id="show-accounts"></i>
+                                    <span class="bell-wrap" id="show-notification">
+                                        <i class="fa-solid fa-bell"></i>
+                                        <span class="alert-count" id="admin-alert-count"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+            </div>
+
+        <!-- THIS CONTAINER CHANGES -->
+        <div class="all-container-wrapper home" id="home-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Dashboard</h3>
+                <p>Overview of students data</p>
+            </div>
+            <div class="dash-view-grid-layout">
+                <div class="status">
+                    <div class="status-card">
+                        <p class="status-text">Total Students</p>
+                    <h3 class="status-total" id="totalstudents"></h3>
+                    </div>
+                    <img src="icons/bar-chart.png" alt="bar">
+                </div>
+
+                 <div class="status">
+                    <div class="status-card">
+                        <p class="status-text">Total Complete</p>
+                    <h3 class="status-total" id="totalstudents-complete"></h3>
+                    </div>
+                    <img src="icons/bar-chart.png" alt="bar">
+                </div>
+
+                 
+
+                  <div class="status">
+                    <div class="status-card">
+                        <p class="status-text">Total Male</p>
+                    <h3 class="status-total" id="totalmale"></h3>
+                    </div>
+                    <img src="icons/bar-chart.png" alt="bar">
+                </div>
+
+                   <div class="status">
+                    <div class="status-card">
+                        <p class="status-text">Total Female</p>
+                    <h3 class="status-total" id="totalfemale"></h3>
+                    </div>
+                    <img src="icons/bar-chart.png" alt="bar">
+                </div>
+
+                  <div class="status">
+                    <div class="status-card">
+                        <p class="status-text">Total Staff</p>
+                    <h3 class="status-total" id="total-teachers"></h3>
+                    </div>
+                    <img src="icons/bar-chart.png" alt="bar">
+                </div>
+
+             <!-- status-grid layout ends here -->
+            </div>
+
+            <!-- male and female pie chart -->
+             <!-- <div class="dashboard-charts">
+
+            <div class="chart-box">
+                <h3>Gender Distribution</h3>
+                <canvas id="genderChart"></canvas>
+            </div>
+            </div> -->
+
+
+
+            <!-- review of student total -->
+             <div class="class-total-view">
+                 <div class="teacher-review-card">
+                    <h3 class="total-view-h3"> Class Data</h3>
+                    <canvas id="classChart" class="classes-canvas"></canvas>
+                  
+                </div>
+
+                <div class="total-class-review-card">
+                    <h3 class="total-view-h3">Classes</h3>
+                      <div class="grid-class-layout" >
+                        <!-- <div class="grid-class-card">
+                            <h4>Primary 1</h4>
+                            <p>Total Students: <span>50</span></p>
+                            <div class="flex-gender-class">
+                                <p>Male: <span>30</span></p>
+                            <p>Female: <span>20</span></p>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+
+                 
+
+             </div>
+          
+        </div>
+
+
+        </div>
+
+
+
+
+           <!-- THIS CONTAINER CHANGES FOR STUDENTS PAGE-->
+        <div class="all-container-wrapper students-dash" id="students-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Students Management</h3>
+                <p>Manage all student information</p>
+
+                <div class="flex-students-selections">
+                    <div class="flex-left-card-selection">
+                  <form>
+                        <div class="form-select student-class-selection">
+                            <select id="filter-class">
+                            <option value="">Select class</option>
+                            <!-- <option value="Primary 1">Primary 1</option>
+                            <option value="Primary 2">Primary 2</option>
+                            <option value="Primary 3">Primary 3</option>
+                            <option value="Primary 4A">Primary 4A</option>
+                            <option value="Primary 4B">Primary 4B</option>
+                            <option value="Primary 5A">Primary 5A</option>
+                            <option value="Primary 5B">Primary 5B</option>
+                            <option value="Primary 6A">Primary 6A</option>
+                            <option value="Primary 6B">Primary 6B</option> -->
+                            </select>
+
+                            <div class="arrow-icon">
+                            <i class="fa-solid fa-caret-down"></i>
+                            </div>
+                        </div>
+                        </form>
+
+                        <button class="student-details-btn" id="load-class-students">
+                        Students details
+                        </button>
+
+                        
+                    </div>
+                    <div class="right-card-selection">
+                        <input type="search"placeholder="Search with name"class="report-card-search" id="search-by-name">
+                            <button class="refresh-btn" id="refreshPageBtn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                        </div>
+                </div>
+
+                <div class="student-information-table-wrapper students-table-wrapper">
+                    <table class="student-details-table">
+                        <thead>
+                            <tr>
+                                <th>Admission No.</th>
+                                <th>Admission Date</th>
+                                <th>Full Name</th>
+                                <th>Date of Birth</th>
+                                <th>Gender</th>
+                                <th>Class</th>
+                                <th>Section</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          
+        </div>
+
+        </div>
+
+
+               <!-- THIS CONTAINER CHANGES FOR TEACHERS PAGE-->
+        <div class="all-container-wrapper teacher-dash" id="teacher-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Teachers Management</h3>
+                <p>Manage all teachers information</p>
+
+                
+                <div class="student-information-table-wrapper">
+
+                    <table class="student-details-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Gender</th>
+                                <th>Qualification</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody id="teachers-table-body-show">
+                          
+                        </tbody>
+                    </table>
+               
+
+            </div>
+          
+        </div>
+
+        </div>
+        </div>
+
+
+
+
+              <!-- THIS CONTAINER CHANGES FOR reports PAGE-->
+        <div class="all-container-wrapper students-dash" id="end-term-reports-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+           <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Terminal Reports</h3>
+                <p>Manage student terminal reports</p>
+            </div>
+
+            <div class="flex-class-student-card">
+                <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="gender" id="class-to-select-terminal-reports">
+                                <option value="">Select class</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                  <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Term<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                           <select name="Term" id="term-to-select-terminal-reports">
+                           <option value="">Select term</option>
+                          
+                             </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Academic year<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="gender" id="academic-year-to-select-terminal-reports">
+                                <option value="">Select year</option>
+                                 
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex-reports-btns">  
+                <button class="basic-details viewbtn" id="generate-reports-cards-btn">Generate Reports </button>
+                <input type="search" placeholder="Search with name" class="report-card-search" id="student-to-select-terminal-reports">
+            </div>
+
+           <div class="report-card-wrapper">
+             <div class="show-class-name-print">
+                <div class="report-class-information">
+                    <h4 id="class-choose-name-terminal-reports"></h4>
+                <p>Total students: <span id="total-students-in-class"></span></p>
+                </div>
+                   <button class="basic-details" id="print-terminal-report-btn"><i class="fa-solid fa-print"></i>Print report cards</button>
+            </div>
+
+            <div id="all-terminal-reports-container" class="all-terminal-reports-container">
+                <div class="assessment-table-container" id="assessment-table-container">
+                        <!-- <p class="print-p-top-text" id="print-active-card">Print</p> -->
+
+                    <div class="terminal-card-header-details">
+                        <img src="../CRIG-LOGO1.png" alt="logo" class="school-img">
+                        <div class="school-details-middle">
+                            <h2>MINISTRY OF EDUCATION</h2>
+                            <h3>CRIG PRIMARY SCHOOL</h3>
+                            <h5>COCOA RESEARCH INSTITUTE OF GHANA, NEW TAFO-AKIM</h5>
+                            <h5>PHONE: 0503263420</h5>
+                            <h4 class="dark-over">Terminal Report</h4>
+                        </div>
+                       <div class="student-profile-img">
+                         <!-- <img src="icons/Student-picture.JPG" alt="student-picture"> -->
+                       </div>
+                    </div>
+
+                    <!-- students class information -->
+                     <div class="class-in-information">
+                        <div class="box-left-in-class">
+                            <h4>NAME:   <span id="show-student-name-text"></span></h4>
+                            <h4>ACADEMIC YEAR:   <span id="show-academic-year-text"></span></h4>
+                            <h4>TERM:   <span id="show-term-text"></span></h4>
+                            <h4>CLASS:   <span id="show-student-class-text"></span></h4>
+                            <h4>NUMBER ON ROLL:   <span id="show-total-student-in-class-text"></span></h4>
+                        </div>
+
+                         <div class="box-left-in-class">
+                            <h4>AVERAGE SCORE:   <span id="show-score-average-mark-text"></span></h4>
+                            <h4>TOTAL SCORE:   <span id="show-total-marks-obtained-text"></span></h4>
+                            <h4>POSITION IN CLASS:   <span id="show-student-position-text"></span></h4>
+                            <h4>DATE OF VACATION:   <span id="show-data-for-vacation-text"></span></h4>
+                            <h4>NEXT TERM BEGINS:   <span id="show-date-for-next-resume-text"></span></h4>
+                        </div>
+                     </div>
+
+                     <div class="grade-term-report-table">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th class="left-text">SUBJECT</th>
+                                    <th>CLASS SCORE(50%)</th>
+                                    <th>EXAMS SCORE(50%)</th>
+                                    <th>TOTAL SCORE(100%)</th>
+                                    <th>POSITION IN SUBJECT</th>
+                                    <th>GRADE</th>
+                                    <th>REMARKS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="show-students-subject-assigned-here-body">
+                               
+                                 
+                            </tbody>
+                        </table>
+                     </div>
+
+
+                     <!-- students over all remarks -->
+                      <div class="over-all-remarks-card">
+                        <div class="flex-h4-text">
+                            <h4>ATTENDANCE: <span id="presents-days"></span></h4>
+                            <h4>OUT OF: <span id="total-days"></span></h4>
+                            <h4>PROMOTE TO: <span id="promoted-class"></span></h4>
+                        </div>
+
+                        <h4>CONDUCT: <span id="teachers-remarks-conduct-text"></span></h4>
+                        <h4>ATTITUDE: <span id="teaachers-remarks-attitude-text"></span></h4>
+                        <h4>INTEREST: <span id="teachers-remarks-interest-text"></span></h4></span></h4>
+                      </div>
+
+                      <!-- grade box and signature -->
+                       <div class="grade-box-flex">
+                        <div class="signature-flex">
+                            <div class="signature-card">
+                                <h4>................................................</h4>
+                                <h4>CLASS TEACHER'S SIGNATURE</h4>
+                            </div>
+                            <div class="signature-card">
+                                <h4>.................................................</h4>
+                                <h4>HEAD TEACHER'S SIGNATURE</h4>
+                            </div>
+                        </div>
+
+                        <div class="grades-card-flex">
+                            <div class="card-grade">
+                                <h5>0   -   49  FAIL</h5>
+                                <h5>70   -   79  GOOD</h5>
+                            </div>
+
+                             <div class="card-grade">
+                                <h5>50   -   59  WEAK PASS</h5>
+                                <h5>80   -   89  VERY GOOD</h5>
+                            </div>
+
+                             <div class="card-grade">
+                                <h5>60   -   69  AVERAGE</h5>
+                                <h5>90   -   100  EXCELLENT</h5>
+                            </div>
+                        </div>
+                       </div>
+
+                </div>
+
+                </div>
+
+                    <div class="space-bottom"></div>
+
+
+           </div>
+        </div>
+
+        </div>
+        <!-- reports cards end top -->
+
+
+
+          <!-- THIS CONTAINER CHANGES FOR CLASS LIST PAGE-->
+        <div class="all-container-wrapper class-dash" id="classes-list-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Students Class List</h3>
+                <p>Manage class information</p>
+
+                <div class="flex-class-box">
+                    <div class="flex-class-card">
+                        <!-- <div class="form-group"> -->
+                        <!-- <label for="gender">Class<span class="compulsory-info-span">*</span></label> -->
+                        <div class="form-select class-selects">
+                            <select name="class-select" id="class-select">
+                                <option value="">Select class</option>
+                                <option value="Primary 1">Primary 1</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4A">Primary 4A</option>
+                                <option value="Primary 4B">Primary 4B</option>
+                                <option value="Primary 5A">Primary 5A</option>
+                                <option value="Primary 5B">Primary 5B</option>
+                                <option value="Primary 6A">Primary 6A</option>
+                                <option value="Primary 6B">Primary 6B</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    <!-- </div> -->
+                    <button class="print-names-btn"  id="load-class-btn">Class list</button>
+                    </div>
+
+                     <div class="right-side-class">
+                        <input type="search" placeholder="Search with name" class="report-card-search"  id="class-search-list">
+                     <button class="refresh-btn" id="print-class-list-btn"><i class="fa-solid fa-print"></i> Print List</button>
+                     </div>
+                </div>
+
+                <!-- list of class box -->
+                 <div class="listbox">
+
+                    <div class="assessment-table-container" id="class-list-print-area">
+                    <div class="terminal-card-header-details classnames">
+                        <!-- <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img"> -->
+                        <div class="school-details-middle">
+                            <h3>CRIG PRIMARY SCHOOL</h3>
+                            <h3><span id="selected-class-name"></span> Class List</h3>
+
+                            <div class="class-list-status">
+                                <p>Total Students: <span id="class-total">0</span></p>
+                                <p>Male: <span id="class-male">0</span></p>
+                                <p>Female: <span id="class-female">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                         <div class="grade-term-report-table">
+                            <table class="class-names-table">
+                            <thead class="left-align">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student Name</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-list-of-class">
+                                
+                            </tbody>
+                        </table>
+                     </div>
+
+
+                </div>
+
+
+                 </div>
+            </div>
+          
+        </div>
+
+        </div>
+       
+
+
+     
+
+
+
+             <!-- THIS CONTAINER CHANGES FOR TERM REVIEW PAGE-->
+        <div class="all-container-wrapper teacher-dash" id="term-review-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Term Review</h3>
+                <p>Current term information</p>
+
+                <div class="inline-term-btns">
+                    <button class="reports-btn-review active-review" id="current-terms-btn-show">Current term</button>
+                    <button class="reports-btn-review" id="report-settings-btn-show">Report settings</button>
+                    <button class="reports-btn-review" id="term-days-btn-show">Term days</button>
+                    <button class="reports-btn-review" id="academic-years-btn-show">Academic years</button>
+                </div>
+
+                <div class="current-reports-container" id="current-terms-container">
+                    <h4 class="current-terms-h4">Term settings</h4>
+                     <table class="student-details-table">
+                        <thead>
+                        <tr>
+                            <th>Curren term</th>
+                            <th>Academic year</th>
+                            <th>Start date</th>
+                            <th>End date</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="current-terms-settings">
+                           <td colspan="5">No current term loaded.</td>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+                <!-- reports settings -->
+                    <div class="current-reports-container off-show-container" id="reports-settings-container">
+                    <h4 class="current-terms-h4">Report settings</h4>
+                     <table class="student-details-table">
+                        <thead>
+                        <tr>
+                            <th>Curren term</th>
+                            <th>Academic year</th>
+                            <th>Vacation date</th>
+                            <th>Next term date</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="reports-terms-settings">
+                           <td colspan="5">No current term loaded.</td>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+                   <!-- reports settings -->
+                    <div class="current-reports-container off-show-container" id="term-days-container">
+                    <h4 class="current-terms-h4">Current term days</h4>
+                     <table class="student-details-table">
+                        <thead>
+                        <tr>
+                            <th>Curren term</th>
+                            <th>Academic year</th>
+                            <th>Total day</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="term-days-body">
+                           <td colspan="5">No current term loaded.</td>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+                   <!-- academic years -->
+                    <div class="current-reports-container off-show-container" id="academic-years-container">
+                    <h4 class="current-terms-h4">Academic years</h4>
+                     <table class="student-details-table">
+                        <thead>
+                        <tr>
+                            <th>Academic year</th>
+                            <th>Status</th>
+                            <th>Terms</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="academic-years-body">
+                           <td colspan="4">No academic year loaded.</td>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
+            </div>
+          
+        </div>
+
+        </div>
+
+
+
+
+                 <!-- THIS CONTAINER CHANGES FOR PROMOTION PAGE-->
+        <div class="all-container-wrapper teacher-dash" id="promotion-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Students Promotion</h3>
+                <p>Manage all promotion information</p>
+
+     <div class="flex-class-student-card">
+  <div class="select-report-class">     
+        <div class="form-select">
+    <select id="promotion-class-select">
+          <option value="">Select Class</option>
+    </select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+
+   </div>
+
+  </div>
+
+    <button id="load-promotion-students-btn" class="reports-btn-review">Load Students</button>
+    <button id="promote-class-btn" class="reports-btn-review">Promote All Students</button>
+    <h4>
+    Total Students:
+    <span id="promotion-total-students">0</span>
+  </h4>
+
+
+</div>
+
+  <div id="promotion-preview-info"></div>
+
+                  <div class="student-information-table-wrapper">
+                    <table class="student-details-table">
+                        <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Student Name</th>
+                            <th>Current Class</th>
+                            <th>Next Class / Status</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="promotion-students-table-body">
+                           <td colspan="5">No students loaded.</td>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+          
+        </div>
+
+        </div>
+
+
+
+                    <!-- THIS CONTAINER CHANGES FOR ASSIGNED CLASS TEACHERS PAGE-->
+        <div class="all-container-wrapper assigned-teacher-dash" id="assigned-teacher-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Class Teachers and Subjects</h3>
+                <p>Manage assigned class teachers and subjects </p>
+
+                <div class="grid-layout-for-class-teachers-dash">
+                  <div class="student-information-table-wrapper assigned-teachers-wrapper">
+                    <h3 class="assigned-teacher-dash-h3">Assigned class teachers</h3>
+                    <table class="student-details-table">
+                        <thead>
+                            <tr>
+                                <!-- <th>#</th> -->
+                                <th> Teacher Name</th>
+                                <th>Class Assigned</th> 
+                                <th>Action</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody id="assigned-Table-Body">
+                           
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subjects-assigned-wrapper">
+                      <h3 class="assigned-teacher-dash-h3">Assigned subjects</h3>
+                        <table class="student-details-table">
+                        <thead>
+                            <tr>
+                                <!-- <th>#</th> -->
+                                <th>Teacher Name</th>
+                                <th>Class</th>
+                                <th>Subjects</th>
+                                <th>Action</th>
+                               
+                            </tr>
+                        </thead>
+                        <tbody id="subject-assignment-table-body">
+                           
+                        </tbody>
+                    </table>
+                </div>
+
+                </div>
+            </div>
+          
+        </div>
+
+        </div>
+
+
+
+                           <!-- THIS CONTAINER CHANGES FOR ASSESSMENT SHEET PAGE-->
+        <div class="all-container-wrapper score-dash" id="assement-content-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Assement Sheet</h3>
+                <p>Print assessment sheet</p>
+
+                    <div class="flex-class-student-card">
+  <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select class </label>
+        <div class="form-select">
+    <select id="assessment-sheet-class"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+  <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select subject </label>
+        <div class="form-select">
+            <select id="assessment-sheet-subject"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+
+    <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select term </label>
+        <div class="form-select">
+            <select id="assessment-sheet-term"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+</div>
+
+<div class="score-button-flex">
+    <button id="load-assessment-sheet-btn">Load Assessement Sheet</button>
+<button id="print-assessemt-sheet-btn">Print</button>
+</div>
+</div>
+
+<div class="assessement-sheet-container" style="display:none;">
+  <div class="area-to-show" id="assessement-sheet-print-area">
+      <div class="terminal-card-header-details">
+        <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img">
+        <div class="school-details-middle">
+          <h3>CRIG PRIMARY SCHOOL</h3>
+          <h4>ASSESSMENT SHEET</h4>
+        </div>
+        <span class="sheet-logo-balance" aria-hidden="true"></span>
+      </div>
+
+      <div class="class-in-information">
+        <div class="box-left-in-class">
+          <h4>TEACHER: <span id="assessment-sheet-teacher"></span></h4>
+          <h4>ACADEMIC YEAR: <span id="assessment-sheet-academic-year"></span></h4>
+          <h4>TERM: <span id="assessment-sheet-term-text"></span></h4>
+        </div>
+
+        <div class="box-left-in-class">
+          <h4>CLASS: <span id="assement-sheet-class-text"></span></h4>
+          <h4>SUBJECT: <span id="assement-sheet-subject-text"></span></h4>
+        </div>
+      </div>
+
+    <table class="score-sheet-table-content">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>STUDENT NAME</th>
+          <th>TOTAL<br>CLASS <br>SCORE<br>(50%)</th>
+          <th>TOTAL <br>EXAM <br>SCORE<br>(50%)</th>
+          <th>TOTAL</th>
+        </tr>
+      </thead>
+      <tbody id="assessment-sheet-table-body"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+ </div>
+
+
+
+        
+             <!-- THIS CONTAINER CHANGES FOR ATTENDANCE PAGE-->
+        <div class="all-container-wrapper attendance-dash" id="attendance-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Attendance</h3>
+                <p>View all students attendance</p>
+
+                
+            <div class="flex-class-student-card">
+                <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="gender" id="select-class-view-attendance">
+                                <option value="">Select class</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                  <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Term<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                           <select name="Term" id="select-term-view-attendance">
+                           <option value="">Select term</option>
+                           
+                             </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Academic year<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="year" id="select-academic-year-view-attendance">
+                                <option value="">Select year</option> 
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+            <button class="basic-details viewbtn" id="attendance-view-btn">View attendance </button>
+
+            <div class="attendance-print-wrapper">
+                <div class="show-class-name-print">
+                <div class="report-class-information">
+                    <h4 class="class-seleted-name-for-attendance-view"></h4>
+                <p>Total students: <span id="total-student-view-class-attendance"></span></p>
+                </div>
+                <div class="attendance-report-actions">
+                   <button class="basic-details" id="edit-attendance"><i class="fa-solid fa-pen-to-square"></i>Edit total days</button>
+                   <button class="basic-details" id="print-attendance"><i class="fa-solid fa-print"></i>Print attendance</button>
+                </div>
+            </div>
+
+                    <div class="assessment-table-container" id="assessment-table-container">
+    
+                    <div class="report-card-header-details">
+                        <!-- <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img"> -->
+                        <div class="attend-details-middle">
+                            <h2>ATTENDANCE REPORT</h2>
+                          <div class="attend">
+                              <h3>PRIMARY 5A</h3>
+                            <h4>ACADEMIC YEAR:  <span id="academic-year-attendance"></span></h4><h4 id="term-view-attendance-name">TERM 1</h4>
+                          </div>
+                        </div>
+                    </div>
+
+                      <div class="grade-term-report-table">
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>STUDENT NAMES</th>
+                                    <th>TOTAL PRESENTS</th>
+                                    <th>TOTAL ABSENTS</th>
+                                    <th>OVER ALL DAYS</th>
+                                    <th class="attendance-action-col">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="load-student-class-attendace">
+
+                            </tbody>
+                        </table>
+                     </div>
+
+
+                    </div>
+
+            </div>
+            </div>
+          
+        </div>
+
+        </div>
+
+
+
+                    <!-- THIS CONTAINER CHANGES FOR SCORE SHEET PAGE-->
+        <div class="all-container-wrapper score-dash" id="score-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Score Sheet</h3>
+                <p>View score sheet marks</p>
+
+                    <div class="flex-class-student-card">
+  <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select class to veiw</label>
+        <div class="form-select">
+    <select id="score-sheet-class"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+  <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select subject to view</label>
+        <div class="form-select">
+            <select id="score-sheet-subject"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+
+    <div class="select-report-class">
+      <div class="form-group">
+          <label for="gender">Select term to view</label>
+        <div class="form-select">
+            <select id="score-sheet-term"></select>
+     <div class="arrow-icon">
+    <i class="fa-solid fa-caret-down"></i>
+   </div>
+   </div>
+   </div>
+
+  </div>
+
+</div>
+
+<div class="score-button-flex">
+    <button id="load-score-sheet-btn">Load Score Sheet</button>
+<button id="print-score-sheet-btn">Print</button>
+</div>
+</div>
+
+<div class="score-sheet-container" style="display:none;">
+  <div class="area-to-show" id="score-sheet-print-area">
+      <div class="terminal-card-header-details">
+        <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img">
+        <div class="school-details-middle">
+          <!-- <h2>MINISTRY OF EDUCATION</h2> -->
+          <h3>CRIG PRIMARY SCHOOL</h3>
+          <h4>SCORE SHEET</h4>
+        </div>
+        <span class="sheet-logo-balance" aria-hidden="true"></span>
+      </div>
+
+      <div class="class-in-information">
+        <div class="box-left-in-class">
+          <h4>TEACHER: <span id="score-sheet-teacher"></span></h4>
+          <h4>ACADEMIC YEAR: <span id="score-sheet-academic-year"></span></h4>
+          <h4>TERM: <span id="score-sheet-term-text"></span></h4>
+        </div>
+
+        <div class="box-left-in-class">
+          <h4>CLASS: <span id="score-sheet-class-text"></span></h4>
+          <h4>SUBJECT: <span id="score-sheet-subject-text"></span></h4>
+        </div>
+      </div>
+
+    <table class="score-sheet-table-content">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Student Name</th>
+          <th>Class Score</th>
+          <th>Exam Score</th>
+          <th>Total</th>
+          <th>Position</th>
+        </tr>
+      </thead>
+      <tbody id="score-sheet-table-body"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+ </div>
+
+
+          
+        <!-- </div>
+        </div>
+        </div> -->
+
+
+              <!-- THIS CONTAINER CHANGES FOR ORDER OF MERIT PAGE-->
+        <div class="all-container-wrapper merit-dash" id="merit-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+            <div class="status-container">
+                <div class="dash-intro-card">
+                    <h3 class="dash-view-text">Order of Merit</h3>
+                    <p>Rank students by total marks for the term</p>
+
+                    <div class="flex-class-student-card">
+                        <div class="select-report-class">
+                            <div class="form-group">
+                                <label for="merit-class">Class<span class="compulsory-info-span">*</span></label>
+                                <div class="form-select">
+                                    <select name="class" id="merit-class">
+                                        <option value="">Select class</option>
+                                    </select>
+                                    <div class="arrow-icon">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="select-report-class">
+                            <div class="form-group">
+                                <label for="merit-term">Term<span class="compulsory-info-span">*</span></label>
+                                <div class="form-select">
+                                    <select name="term" id="merit-term">
+                                        <option value="">Select term</option>
+                                    </select>
+                                    <div class="arrow-icon">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="score-button-flex">
+                        <button id="load-merit-btn">Load Order of Merit</button>
+                        <button id="print-merit-btn">Print Order of Merit</button>
+                    </div>
+
+                    <div id="merit-print-area" class="broadsheet-print-area">
+                        <div class="terminal-card-header-details">
+                            <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img">
+                            <div class="school-details-middle">
+                                <h3>CRIG PRIMARY SCHOOL</h3>
+                                <h4>ORDER OF MERIT</h4>
+                            </div>
+                            <span class="sheet-logo-balance" aria-hidden="true"></span>
+                        </div>
+
+                        <div class="class-in-information">
+                            <div class="box-left-in-class">
+                                <h4>ACADEMIC YEAR: <span id="merit-display-academic-year">-</span></h4>
+                                <h4>TERM: <span id="merit-display-term">-</span></h4>
+                            </div>
+
+                            <div class="box-left-in-class">
+                                <h4>CLASS: <span id="merit-display-class">-</span></h4>
+                            </div>
+                        </div>
+
+                        <p id="merit-summary" class="merit-summary"></p>
+
+                        <div class="broadsheet-table-wrapper merit-table-wrapper">
+                            <table class="broadsheet-table merit-table">
+                                <thead>
+                                    <tr>
+                                        <th>S/N</th>
+                                        <th class="student-name-col">Student Name</th>
+                                        <th class="merit-class-col" style="display:none;">Class</th>
+                                        <th>Total Marks</th>
+                                        <th>Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="merit-table-body">
+                                    <tr><td colspan="4">No order of merit loaded.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+              <!-- THIS CONTAINER CHANGES FOR BROADSHEET PAGE-->
+        <div class="all-container-wrapper broadsheet-dash" id="broadsheet-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Class Broadsheet</h3>
+                <p>View term performance summary</p>
+
+                       
+            <div class="flex-class-student-card">
+                <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="gender" id="broadsheet-class">    
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                  <div class="select-report-class">
+                       <div class="form-group">
+                        <label for="gender">Term<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                           <select name="Term"  id="broadsheet-term">
+                           <option value="">Select term</option>
+                            
+                             </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-button-flex">
+                <button id="load-broadsheet-btn">Load Broadsheet</button>
+                    <button id="print-broadsheet-btn">Print Broadsheet</button>
+            </div>
+
+
+            <div id="broadsheet-print-area" class="broadsheet-print-area">
+                <div class="terminal-card-header-details">
+                    <img src="icons/CRIG-LOGO1.png" alt="logo" class="school-img">
+                    <div class="school-details-middle">
+                        <h3>CRIG PRIMARY SCHOOL</h3>
+                        <h4>CLASS BROADSHEET</h4>
+                    </div>
+                    <span class="sheet-logo-balance" aria-hidden="true"></span>
+                </div>
+
+                <div class="class-in-information">
+                    <div class="box-left-in-class">
+                        <h4>ACADEMIC YEAR: <span id="broadsheet-display-academic-year">-</span></h4>
+                        <h4>TERM: <span id="broadsheet-display-term">-</span></h4>
+                    </div>
+
+                    <div class="box-left-in-class">
+                        <h4>CLASS: <span id="broadsheet-display-class">-</span></h4>
+                    </div>
+                </div>
+
+  <div class="broadsheet-table-wrapper">
+    <table class="broadsheet-table">
+      <thead id="broadsheet-table-head"></thead>
+      <tbody id="broadsheet-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+            
+         
+                         
+             
+     
+          
+        </div>
+
+        </div>
+        </div>
+
+
+
+            <!-- THIS CONTAINER CHANGES FOR ASSESSMENT SHEET PAGE-->
+        <div class="all-container-wrapper assessment-dash" id="assessment-dash">
+            <!-- STATUS CARD CONTAINER-- -->
+        <div class="status-container">
+            <div class="dash-intro-card">
+                <h3 class="dash-view-text">Mark Sheet</h3>
+                <p>Marks sheet for students</p>
+
+                <div class="class-subject-selection-card">
+                     <div class="selected-card">
+                                            <div class="flex-class">
+                                            <div class="hat"><i class="fa-solid fa-graduation-cap"></i></div>
+                                            <div class="class-text">
+                                                <h4>Select Class</h4>
+                                            <p>Choose a class to view students</p>
+                                            </div>
+                                            </div>
+                                                <div class="form-group">
+                                                    <div class="form-select">
+                                                        <select name="gender" class="select-opt">
+                                                        <option value="">Select class</option>
+                                                        <option value="Primary 1">Primary 1</option>
+                                                        <option value="Primary 2">Primary 2</option>
+                                                        <option value="Primary 3">Primary 3</option>
+                                                        <option value="Primary 4A">Primary 4A</option>
+                                                        <option value="Primary 4B">Primary 4B</option>
+                                                        <option value="Primary 5A">Primary 5A</option>
+                                                        <option value="Primary 5B">Primary 5B</option>
+                                                        <option value="Primary 6A">Primary 6A</option>
+                                                        <option value="Primary 6B">Primary 6B</option>
+                                                        </select>
+                                                        <div class="arrow-icon">
+                                                            <i class="fa-solid fa-caret-down"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                              <div class="selected-card">
+
+                                                <div class="flex-class">
+                                                    <div class="hat"><i class="fa-solid fa-book-open"></i></div>
+                                                    <div class="class-text">
+                                                        <h4>Select Subject</h4>
+                                                    <p>Choose a subject to enter marks</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                        <div class="form-select">
+                                                            <select name="class" class="select-opt">
+                                                                <option value="">Select subject</option>
+                                                                <option value="Mathematic">Mathematic</option>
+                                                                <option value="Our World Our People">Our World Our People</option>
+                                                                <option value="History">History</option>
+                                                                <option value="English Language">English Language</option>
+                                                                <option value="French">French</option>
+                                                                <option value="Creative Arts">Creative Arts</option>
+                                                                <option value="Science">Science</option>
+                                                                <option value="Ghanaian Language">Ghanaian Language</option>
+                                                                <option value="Religious and Moral Education">Religious and Moral Education</option>
+                                                                <option value="Computing">Computing</option>
+                                                            </select>
+                                                                <div class="arrow-icon">
+                                                                    <i class="fa-solid fa-caret-down"></i>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+
+                                                <div class="selected-card">
+
+                                                <div class="flex-class">
+                                                    <div class="hat"><i class="fa-solid fa-user"></i></div>
+                                                    <div class="class-text">
+                                                        <h4>Select Teacher</h4>
+                                                    <p>Choose a teacher</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                        <div class="form-select">
+                                                            <select name="teachers" class="select-opt">
+                                                                <option value="">Select teacher</option>
+                                                            </select>
+                                                                <div class="arrow-icon">
+                                                                    <i class="fa-solid fa-caret-down"></i>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+
+                </div>
+
+                <!-- ASSESSMENT  -->
+                 <div class="assess-print-wrapper">
+                    <div class="print-tab">
+                        <button class="gnt-btn" id="generation-id">Generate assessment</button>
+                        <button class="print-btn"><i class="fa-solid fa-print"></i>Print assessment</button>
+                    </div>
+
+                    <div class="assessment-table-container" id="assessment-table-container">
+                        <div class="assessment-header">
+                            <h2>CRIG PRIMARY SCHOOL</h2>
+                        <h3>MARK SHEET</h3>
+                       <div class="flex-assess-titles">
+                         <h5>Subject: <span>Computing</span></h5>
+                        <h5>Class: <span>Primary 5A</span></h5>
+                    </div>
+                    <h5>Teacher: <span>Vivian Aseidu</span></h5>
+                        </div>
+
+                        <table class="assessment-table">
+                            <thead>
+                                <tr><th>#</th>
+                                    <th>Student Name</th>
+                                    <th>Class Score(50%)</th>
+                                    <th>Exams Score(50%)</th>
+                                    <th>Total Score(100%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Princes Akanko</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                </tr>
+                                 <tr>
+                                    <td>2</td>
+                                    <td>Beauty Kyei</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                </tr>
+                                 <tr>
+                                    <td>3</td>
+                                    <td>Ewurabena Essien</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                    <td>00</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+
+                 </div>
+
+            </div>
+          
+        </div>
+
+        </div>
+
+
+
+
+      
+
+
+        <!-- main-dashboard ends here -->
+    </div>
+
+
+
+    <!-- add new student -->
+    <div class="over-lay-container add-students" id="add-student">
+        <div class="form-wrapper">
+            <div class="top-card-title">
+                <h2>Add New Student</h2>
+            </div>
+
+            <form id="studentForm" autocomplete="off">
+            <div class="form-flex-card">
+                    <div class="form-card-left">
+                    <p class="form-info-text-p">Student Information</p>
+
+                    <div class="flex-names">
+                             <div class="form-group">
+                        <label for="admission-number">Admission Number<span class="compulsory-info-span">*</span></label>
+                        <input type="text" class="form-input" name="student-admission-number" id="admission-number" autocomplete="off">
+                    </div>
+
+                          <div class="form-group">
+                        <label for="admissionDate">Admission Date<span class="compulsory-info-span">*</span></label>
+                       <input type="date" class="form-input" name="student-admission-date" id="admissionDate" autocomplete="off">
+                    </div>
+
+                    </div>
+                   
+
+                    <div class="flex-names">
+                          <div class="form-group">
+                        <label for="surname-student">Surname Name<span class="compulsory-info-span">*</span></label>
+                        <input type="text" class="form-input" name="student-surname" id="surname-student" autocomplete="off">
+                    </div>
+
+                        <div class="form-group">
+                        <label for="first-name-student">First Name<span class="compulsory-info-span">*</span></label>
+                        <input type="text" class="form-input" name="student-first-name" id="first-name-student" autocomplete="off">
+                    </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="datePicker">Date of Birth<span class="compulsory-info-span">*</span></label>
+                        <input type="date" class="form-input" name="student-date-of-birth" id="datePicker" autocomplete="off">
+                    </div>
+
+                      <div class="form-group">
+                        <label for="studentGender">Gender<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="gender" class="select-opt" id="studentGender">
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="studentPicture">Picture</label>
+                        <input type="file" accept="image/jpeg, image/png, image/jpg" class="form-input" name="student-picture" id="studentPicture" autocomplete="off">
+                    </div>
+
+                  
+
+                      <div class="form-group">
+                        <label for="studentClass">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="class" id="studentClass">
+                             
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                       <div class="form-group">
+                        <label for="studentSection">Section</label>
+                        <div class="form-select">
+                            <select name="sectionStudent" id="studentSection">
+                                <option value="">Select section</option>
+                                <option value="Red">Red</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Yellow">Yellow</option>
+                                <option value="Green">Green</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-card-right">
+                      <div class="form-group">
+                        <label for="studentStatus">Status<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="statusStudent" id="studentStatus">
+                                <option value="">Select status</option>
+                                <option value="Present">Present</option>
+                                <option value="Stop">Stop</option>
+                                <option value="Complete">Complete</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                    <p class="form-info-text-p">Parent/Guardian Information</p>
+
+                     <div class="form-group">
+                        <label for="parenFullName">Full Name</label>
+                        <input type="text" class="form-input" name="parent-full-name" id="parenFullName" autocomplete="off">
+                    </div>
+
+                      <div class="form-group">
+                        <label for="parentRelationship">Relationship</label>
+                        <div class="form-select">
+                            <select name="RelationshipParent" id="parentRelationship">
+                                <option value="">Select Relationship</option>
+                                <option value="Parent">Parent</option>
+                                <option value="Guardian">Guardian</option>
+                                <option value="Other">other</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="parentPhone">Phone</label>
+                        <input type="text" class="form-input" name="parent-phone" id="parentPhone" autocomplete="off">
+                        </div>
+
+                          <div class="form-group">
+                        <label for="parentAddress">Address</label>
+                        <input type="text" class="form-input" name="parent-address" id="parentAddress" autocomplete="off">
+                        </div>
+
+                         <div class="form-group">
+                        <label for="workArea">Staff or Non-Staff</label>
+                        <div class="form-select">
+                            <select name="staff" id="workArea">
+                                <option value="">Select here</option>
+                                <option value="Staff">Staff</option>
+                                <option value="Non-Staff">Non-Staff</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                    </div>
+                    <!-- flex-card ends here -->
+                    </div>
+
+                    <div class="btns-flex-box">
+                        <button type="button" class="cancel-btn" onclick="closeAddStudent()" id="cancelStudentBtn">Cancel</button>
+                        <button type="submit" class="btn-add" id="addStudentBnt">Add Student</button>
+                    </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+     <!-- add new teacher -->
+    <div class="overlay-add-teacher-container add-teacher-overlay" id="add-teacher">
+         <div class="form-wrapper">
+            <div class="top-card-title">
+                <h2>Add New Teacher</h2>
+            </div>
+
+            <div class="form-flex-card">
+                <div class="form-card-left">
+                    <p class="form-info-text-p">Teacher Information</p>
+   
+                    <div class="flex-names">
+                          <div class="form-group">
+                        <label for="full-name-teacher">Surname Name<span class="compulsory-info-span">*</span></label>
+                        <input type="text" class="form-input" name="full-name-teacher" id="teacher-surname">
+                    </div>
+
+                      <div class="form-group">
+                        <label for="teacher-first-name">First Name<span class="compulsory-info-span">*</span></label>
+                        <input type="text" class="form-input" name="teacher-first-name" id="teacher-firstname">
+                    </div>
+                    </div>
+
+                          <div class="form-group">
+                        <label for="dob-teacher">Date of Birth</label>
+                       <input type="date" class="form-input" name="dob-teacher" id="datePicker-dob">
+                    </div>
+
+
+                      <div class="form-group">
+                        <label for="gender">Gender<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="teacher-gender" class="select-opt" id="teacher-gender">
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                       <div class="form-group">
+                        <label for="marital-status">Marital status</label>
+                        <div class="form-select">
+                            <select name="gender" class="select-opt" id="marital-status">
+                                <option value="">Select here</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                     <div class="form-group">
+                        <label for="teacher-picture">Picture</label>
+                        <input type="file" accept="image/jpg, image/png, image/jpeg" class="form-input" name="picture" id="teacher-picture">
+                    </div>
+
+                        <div class="form-group">
+                        <label for="employed-date">Date Employed</label>
+                       <input type="date" class="form-input" name="employed-date" id="employed-date">
+                    </div>
+
+                      <div class="form-group">
+                        <label for="Qualification">Qualification</label>
+                        <div class="form-select">
+                            <select name="Qualification" id="Qualification">
+                                <option value="">Select here</option>
+                                <option value="PHD">PHD</option>
+                                <option value="Masters">Masters</option>
+                                <option value="Degree">Degree</option>
+                                <option value="HND">HND</option>
+                                <option value="Diploma">Diploma</option>
+                                <option value="Certificate">Certificate</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-card-right">
+
+                     <div class="form-group">
+                        <label for="teacher-status">Status<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="teacher-Active-Status" id="teacher-Active-Status">
+                                <option value="">Select status</option>
+                                <option value="Stop">Stop</option>
+                                <option value="At Post">At Post</option>
+                                <option value="Retired">Retired</option>
+                                <option value="National Service">National Service</option>
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                    <p class="form-info-text-p">Contact Information</p>
+
+                     <div class="form-group">
+                        <label for="teacher-phone">Phone</label>
+                        <input type="text" class="form-input" name="phone" id="teacher-Phone">
+                    </div>
+
+                      <div class="form-group">
+                        <label for="teacher-email">Email<span class="compulsory-info-span">*</span></label>
+                        <input type="email" class="form-input" name="email" id="teacher-Email">
+                    </div>
+
+                          <div class="form-group">
+                        <label for="teacher-address">Address</label>
+                        <input type="text" class="form-input" name="Address" id="teacher-Address">
+                        </div>
+
+                          <div class="form-group">
+                            <label for="role">Role<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                            <select name="role" id="role">
+                                <option value="">Select Role</option>
+                                <option value="Teacher">Teacher</option>
+                                <option value="Head Teacher">Head Teacher</option>
+                                <option value="Administrator">Administrator</option>
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                        <div class="form-group">
+                      <label for="password">Default Password<span class="compulsory-info-span">*</span></label>
+                      <input type="password" class="form-input" name="pass" id="teacher-password">
+                  </div>
+
+                </div>
+                <!-- flex-card ends here -->
+            </div>
+
+            <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeAddTeacher()">Cancel</button>
+                <button class="btn-add"  type="button" id="addTeachersBtn">Add Teacher</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+      <!-- assigning class teachers -->
+    <div class="over-lay-container add-class" id="add-class-teacher">
+          <div class="attendance-card">
+                  <div class="top-card-title">
+                <h2>Assign Class Teacher</h2>
+                </div>
+
+                    <div class="form-group">
+                            <label for="role">Teacher<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                                 <select name="classTeacher" id="teachers-registered-names" required>
+                                <option value="" disabled selected>Select Teacher</option>
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                          <div class="form-group">
+                        <label for="class">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                          <select name="student-class" id="student-assigned-teacher-classes">
+                            
+                            <!-- <option disabled selected>Select class</option> -->
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                           <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeSubjectPage()">Cancel</button>
+                <button type="button" class="btn-add" id="assigned-class-teacher-btn">Assign Teacher</button>
+            </div>
+
+            </div>
+
+    </div>
+
+
+
+    
+      <!-- Update assigned class teacher -->
+    <div class="over-lay-container update-assigned-teacher-class" id="update-assigned-class-teacher">
+          <div class="attendance-card">
+                  <div class="top-card-title">
+                <h2>Assign Class Teacher</h2>
+                </div>
+
+                    <div class="form-group">
+                            <label for="role">Teacher<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                                 <select name="classTeacher" id="teachers-assign-update" required>
+                                <option value="" disabled selected>Select Teacher</option>
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                          <div class="form-group">
+                        <label for="class">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                          <select name="student-class" id="student-assign-Class-update" required>
+                            <option disabled selected>Select class</option>
+
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                           <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeUpdateOverlay()">Cancel</button>
+                <button type="button" class="btn-add" id="assigned-teacher-btn-update">Update Assign Teacher</button>
+            </div>
+
+            </div>
+
+    </div>
+
+
+
+    <!-- assigned subjects to teachers -->
+       <div class="over-lay-container add-class" id="assigned-subjects">
+          <div class="attendance-card">
+                  <div class="top-card-title">
+                <h2>Assign Subject/s</h2>
+            </div>
+                     
+                          <div class="form-group">
+                            <label for="role">Teacher<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                              <select id="assigned-select-teacher">
+                            <option value="">Select teacher</option>
+                            </select>
+
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div> 
+
+                       <div class="form-group">
+                            <label>Select Subjects<span class="compulsory-info-span">*</span></label>
+
+                            <div class="tag-container" id="subjectTags">
+                                <span class="tag" data-value="Mathematics">Mathematics</span>
+                                <span class="tag" data-value="Our World Our People">Our World Our People</span>
+                                <span class="tag" data-value="Computing">Computing</span>
+                                <span class="tag" data-value="Creative Arts">Creative Arts</span>
+                                <span class="tag" data-value="History">History</span>
+                                <span class="tag" data-value="Reading">Reading</span>
+                                <span class="tag" data-value="English Language">English Language</span>
+                                <span class="tag" data-value="French">French</span>
+                                <span class="tag" data-value="Religious And Moral Education">Religious And Moral Education</span>
+                                <span class="tag" data-value="Ghanaian Language">Ghanaian Language</span>
+                                <span class="tag" data-value="Science">Science</span>
+                            </div>
+
+                            <!-- Hidden input to store selected values -->
+                            <input type="hidden" name="subjects" id="selectedSubjects">
+                        </div>
+
+
+                           <div class="form-group">
+                        <label for="gender">Class<span class="compulsory-info-span">*</span></label>
+                        <div class="form-select">
+                            <select name="select-class" id="select-class-to-assigned-subject">
+                             
+                            </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                        </div>
+                    </div>
+
+                           <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeSubject()">Cancel</button>
+                <button class="btn-add" id="assignSubjects">Assign subject</button>
+            </div>
+
+            </div>
+
+    </div>
+
+
+
+
+
+      <!-- add total attendance -->
+    <div class="overlay-set-day-container add-attendance" id="add-attendance">
+            <div class="attendance-card">
+                  <div class="top-card-title">
+                <h2>Set Term Total Days</h2>
+                <p class="total-days-p">Total number of school days for the term</p>
+            </div>
+
+            <div class="form-group">
+                            <label for="role">Select academic year<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                                 <select name="status"  id="select-academic-year-days">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                <div class="form-group">
+                            <label for="role">Term<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select" >
+                                 <select name="term-select" id="select-term-add-days">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                         <div class="form-group">
+                        <label for="academic-year">Set total days</label>
+                        <input type="number" class="form-input" name="term-days" id="total-days-for-term">
+                        </div>
+
+                           <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeAddDaysSetting()">Cancel</button>
+                <button class="btn-add" id="save-term-btn">Save term days</button>
+            </div>
+
+            </div>
+
+    </div>
+
+
+
+
+    <!-- students details show overlay -->
+    <div class="students-details-overlay" id="students-details-overlay">
+        <div class="details-wrapper">
+            <h4 class="details-h4">Student Details</h4>
+            <div class="student-name-card">
+                <div class="profile-box-img"></div>
+                <div class="right-name-box">
+                    <h4 class="name-h4-text" id="detail-full-name"></h4>
+                    <p class="details-class-p" id="detail-class"></p>
+                  
+                    <span class="active-status-text" id="detail-status"></span>
+                </div>
+            </div>
+
+            <div class="flex-detail-wrapper">
+                <div class="left-details-card">
+                    <p class="top-details-p"><i class="fa-solid fa-user"></i>Personal Information</p>
+
+                    <div class="group-details">
+                        <label for="">Admission number</label>
+                        <p id="detail-admission-number"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Full name</label>
+                       <p id="detail-fullname-persona"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Date of birth</label>
+                        <p id="detail-dob"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Gender</label>
+                        <p id="detail-gender"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Admission date</label>
+                        <p id="detail-admission-date"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Class</label>
+                       <p id="detail-class-personal"></p>
+                    </div>
+
+                       <div class="group-details">
+                        <label for="">Section</label>
+                           <p id="detail-section"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Status</label>
+                       <p id="detail-status-personal"></p>
+                    </div>
+                    
+                </div>
+
+                <div class="right-datails">
+                      <p class="top-details-p"><i class="fa-solid fa-users"></i>Parent/Guardian Information</p>
+
+                       <div class="group-details">
+                        <label for="">Full name</label>
+                        <p id="detail-parent-name"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Relationship</label>
+                        <p id="detail-relationship"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Phone</label>
+                        <p id="detail-phone"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="detail-address">Address</label>
+                        <p id="detail-address"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Staff or Non-Staff</label>
+                       <p id="detail-staff-type"></p>
+                    </div>
+                </div>
+            
+            </div>
+            <span class="close-student-details" id="close-student-details" onclick="closeOverlay()">&times;</span>
+            <!-- <button class="edit-details">Edit student</button> -->
+        </div>
+
+    </div>
+
+
+
+    
+    <!-- teachers details show overlay -->
+    <div class="students-details-overlay" id="teachers-details-overlay">
+        <div class="details-wrapper">
+            <h4 class="details-h4">Teacher Details</h4>
+            <div class="student-name-card">
+                <div class="profile-box-img"></div>
+                <div class="right-name-box">
+                    <h4 class="name-h4-text" id="detail-techer-full-name"></h4>
+                   <p id="detail-role-teacher"></p>
+                    <span class="active-status-text" id="detail-teacher-status"></span>
+                </div>
+            </div>
+
+            <div class="flex-detail-wrapper">
+                <div class="left-details-card">
+                    <p class="top-details-p"><i class="fa-solid fa-user"></i>Personal Information</p>
+
+                     <div class="group-details">
+                        <label for="">Full name</label>
+                       <p id="detail-fullname-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Date of birth</label>
+                        <p id="detail-dob-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Gender</label>
+                        <p id="detail-gender-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Employed date</label>
+                        <p id="detail-employed-date"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Qualification</label>
+                       <p id="detail-qualification-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Status</label>
+                       <p id="detail-status-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Marital Status</label>
+                       <p id="detail-marital-status-teacher"></p>
+                    </div>
+                    
+                </div>
+
+                <div class="right-datails">
+                      <p class="top-details-p"><i class="fa-solid fa-users"></i>Contact Information</p>
+
+                       <div class="group-details">
+                        <label for="">Phone</label>
+                        <p id="detail-teacher-phone"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Email</label>
+                        <p id="detail-teacher-email"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="detail-address">Address</label>
+                        <p id="detail-address-teacher"></p>
+                    </div>
+
+                </div>
+            
+            </div>
+            <span class="close-student-details" id="close-teachers-details" onclick="closeOverlayTeacherDetails()">&times;</span>
+            <!-- <button class="edit-details">Edit student</button> -->
+        </div>
+
+    </div>
+
+
+    <!-- set terminal report date data -->
+   <div class="setReportDateOverlay" id="setReportDateOverlay">
+  <div class="reportData-wrapper">
+
+    <div class="top-card-title">
+      <h2>Terminal Report Settings</h2>
+    </div>
+
+    <!-- Academic Year -->
+    <div class="form-group">
+      <label>Academic Year<span class="compulsory-info-span">*</span></label>
+      <select id="academic-year-select" class="form-input">
+        <option  disabled>Select Academic Year</option>
+      </select>
+    </div>
+
+    <!-- Term -->
+    <div class="form-group">
+      <label>Term<span class="compulsory-info-span">*</span></label>
+      <div class="form-select">
+        <input type="text" id="term-name-set" placeholder="Term 1"  class="form-input">
+        <!-- <div class="arrow-icon">
+          <i class="fa-solid fa-caret-down"></i>
+        </div> -->
+      </div>
+    </div>
+
+     <div class="form-group">
+      <label>Start Date<span class="compulsory-info-span">*</span></label>
+      <input type="date" class="form-input" id="term-start-date">
+    </div>
+
+     <div class="form-group">
+      <label>End Date<span class="compulsory-info-span">*</span></label>
+      <input type="date" class="form-input" id="term-end-date">
+    </div>
+
+    <!-- Vacation Date -->
+    <div class="form-group">
+      <label>Vacation Date<span class="compulsory-info-span">*</span></label>
+      <input type="date" class="form-input" id="vacation-date">
+    </div>
+
+    <!-- Next Term Date -->
+    <div class="form-group">
+      <label>Next Term Begins<span class="compulsory-info-span">*</span></label>
+      <input type="date" class="form-input" id="next-term-date">
+    </div>
+
+    <button class="setdatecard-btn" id="save-report-settings">
+      Save Report Settings
+    </button>
+
+    <span class="close-student-details" id="close-set-report-details">&times;</span>
+
+  </div>
+</div>
+
+
+
+
+
+    <!-- set academic year date -->
+   <div class="setReportDateOverlay" id="setAcademicDateOverlay">
+  <div class="reportData-wrapper">
+
+    <div class="top-card-title">
+      <h2>Academic Year</h2>
+    </div>
+
+    <!-- Academic Year -->
+    <div class="form-group">
+      <label>Academic Year<span class="compulsory-info-span">*</span></label>
+      <input type="text" type="text" id="year-name-date" placeholder="e.g. 2025/2026" class="form-input">
+    </div>
+
+
+    <!-- Vacation Date -->
+    <div class="form-group">
+        <label name="is-active" class="is-active-box">
+    <input type="checkbox" id="is-active-checkbox" name="is-active"> 
+    Set as Active</label>
+    </div>
+
+
+    <button class="setdatecard-btn" id="save-year-btn">
+      Save Academic Year
+    </button>
+
+    <span class="close-student-details" id="close-academic-report-details">&times;</span>
+
+  </div>
+</div>
+
+
+<!-- update academic year terms -->
+<div id="edit-term-modal" style="display:none;" class="setReportDateOverlay">
+  <div class="reportData-wrapper">
+       <div class="top-card-title">
+      <h2>Edit term</h2>
+    </div>
+
+    <input type="hidden" id="edit-term-id">
+
+    <div class="form-group">
+      <label for="edit-term-name">Term Name</label>
+      <input type="text" id="edit-term-name" placeholder="Enter term name" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label for="edit-term-year">Academic Year</label>
+      <div class="form-select" >
+                                 <select name="term-select" id="edit-term-year">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+    </div>
+
+    <div class="form-group">
+      <label for="edit-term-start-date">Start Date</label>
+      <input type="date" id="edit-term-start-date" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label for="edit-term-end-date">End Date</label>
+      <input type="date" id="edit-term-end-date" class="form-input">
+    </div>
+
+    <div class="btns-flex-box">
+        <button id="close-edit-term-modal-btn" class="cancel-btn" type="button">Cancel</button>
+        <button id="save-term-update-btn" class="setdatecard-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- update academic year -->
+<div id="edit-academic-year-modal" style="display:none;" class="setReportDateOverlay">
+  <div class="reportData-wrapper">
+    <div class="top-card-title">
+      <h2>Edit academic year</h2>
+    </div>
+
+    <input type="hidden" id="edit-academic-year-id">
+
+    <div class="form-group">
+      <label for="edit-academic-year-name">Academic Year<span class="compulsory-info-span">*</span></label>
+      <input type="text" id="edit-academic-year-name" placeholder="e.g. 2025/2026" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label name="edit-academic-year-active" class="is-active-box">
+        <input type="checkbox" id="edit-academic-year-active">
+        Set as Active</label>
+    </div>
+
+    <div class="btns-flex-box">
+        <button id="close-edit-academic-year-btn" class="cancel-btn" type="button">Cancel</button>
+        <button id="save-academic-year-update-btn" class="setdatecard-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- update reports settings information -->
+ <!-- EDIT REPORT SETTINGS MODAL -->
+<div id="edit-report-settings-modal" style="display:none;" class="setReportDateOverlay">
+  <div class="reportData-wrapper">
+     <div class="top-card-title">
+      <h2>Edit Report Settings</h2>
+    </div>
+
+    <input type="hidden" id="edit-report-id" class="form-input">
+
+     <div class="form-group">
+      <label for="edit-term-year">Academic Year</label>
+      <div class="form-select" >
+                                 <select name="term-select" id="edit-report-term">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+    </div>
+
+      <div class="form-group">
+      <label for="edit-term-year">Academic Year</label>
+      <div class="form-select" >
+                                 <select name="term-select"  id="edit-report-year">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+    </div>
+
+    <div class="form-group">
+      <label>Vacation Date</label>
+      <input type="date" id="edit-vacation-date" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label>Next Term Date</label>
+      <input type="date" id="edit-next-term-date" class="form-input">
+    </div>
+
+    <div class="btns-flex-box">
+        <button id="close-report-settings-modal-btn" class="cancel-btn">Cancel</button>
+        <button id="save-report-settings-btn" class="setdatecard-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- edit subject overlay -->
+ <div class="over-lay-container" id="edit-subject-modal" style="display:none;">
+  <div class="attendance-card">
+    
+    <div class="top-card-title">
+      <h2>Edit Subjects</h2>
+    </div>
+
+    <!-- Hidden ID -->
+    <input type="hidden" id="editAssignmentId">
+
+    <!-- SUBJECT TAGS -->
+    <div class="form-group">
+      <label>Select Subjects</label>
+
+      <div class="tag-container" id="editSubjectTags">
+        <span class="tag" data-value="Mathematics">Mathematics</span>
+        <span class="tag" data-value="Science">Science</span>
+        <span class="tag" data-value="English Language">English Language</span>
+        <span class="tag" data-value="History">History</span>
+        <span class="tag" data-value="Reading">Reading</span>
+        <span class="tag" data-value="Computing">Computing</span>
+        <span class="tag" data-value="Creative Arts">Creative Arts</span>
+        <span class="tag" data-value="French">French</span>
+        <span class="tag" data-value="Ghanaian Language">Ghanaian Language</span>
+        <span class="tag" data-value="Religious And Moral Education">Religious And Moral Education</span>
+        <span class="tag" data-value="Our World Our People">Our World Our People</span>
+      </div>
+    </div>
+
+    <div class="btns-flex-box">
+      <button onclick="closeEditModal()">Cancel</button>
+      <button onclick="updateSubjects()">Update</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+ <!--update add total attendance -->
+    <!-- correct a student's marked days when the class teacher made a mistake -->
+    <div class="overlay-set-day-container add-attendance" id="edit-student-attendance">
+        <div class="attendance-card attendance-edit-card">
+            <div class="top-card-title">
+                <h2>Edit Student Attendance</h2>
+                <p class="total-days-p" id="edit-attendance-student-meta"></p>
+            </div>
+
+            <div class="attendance-edit-summary">
+                <span>Present: <strong id="edit-attendance-present-count">0</strong></span>
+                <span>Absent: <strong id="edit-attendance-absent-count">0</strong></span>
+                <span>Over all days: <strong id="edit-attendance-total-days">0</strong></span>
+            </div>
+
+            <p class="attendance-edit-warning" id="edit-attendance-warning"></p>
+
+            <div class="form-group attendance-edit-add-day">
+                <label for="edit-attendance-new-date">Add a day the teacher did not mark</label>
+                <div class="attendance-edit-add-row">
+                    <input type="date" class="form-input" id="edit-attendance-new-date">
+                    <button type="button" class="btn-add" id="edit-attendance-add-date-btn">Add day</button>
+                </div>
+            </div>
+
+            <div class="attendance-edit-list" id="edit-attendance-day-list"></div>
+
+            <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeStudentAttendanceEditor()">Cancel</button>
+                <button class="btn-add" id="save-student-attendance-btn">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay-set-day-container add-attendance" id="update-attendance">
+            <div class="attendance-card">
+                  <div class="top-card-title">
+                <h2>Update Term Total Days</h2>
+                <p class="total-days-p">Total number of school days for the term</p>
+            </div>
+
+            <div class="form-group">
+                            <label for="role">Select academic year<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select">
+                                 <select name="status"  id="update-select-academic-year-days">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                <div class="form-group">
+                            <label for="role">Term<span class="compulsory-info-span">*</span></label>
+                            <div class="form-select" >
+                                 <select name="term-select" id="update-select-term-add-days">
+                              
+                                </select>
+                                <div class="arrow-icon">
+                                     <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                             </div>
+                        </div>
+
+                         <div class="form-group">
+                        <label for="academic-year">Set total days</label>
+                        <input type="number" class="form-input" name="term-days" id="update-total-days-for-term">
+                        </div>
+
+                           <div class="btns-flex-box">
+                <button class="cancel-btn" onclick="closeAddDays()">Cancel</button>
+                <button class="btn-add" id="update-save-term-btn">Save term days</button>
+            </div>
+
+            </div>
+
+    </div>
+
+
+
+
+      <!-- change password -->
+              <!-- <div class="password-overlay" id="password-overlay">
+                <div class="password-wrapper">
+                    <h3>Change Password</h3>
+
+                    <form action="" class="form-change-password">
+                        <label for="">Current password</label>
+                        <input type="password"  id="current-password"
+  
+                        autocomplete="current-password"
+                        required>
+
+                        <label for="">New password</label>
+                        <input type="password" id="new-password"
+   
+                        autocomplete="new-password"
+                        required>
+
+                          <label for="">Retype password</label>
+                        <input type="text" id="confirm-password"
+    
+                        autocomplete="new-password"
+                        required>
+
+                        <button class="btn-change-password" id="btn-change-password" type="button">Change password</button>
+                    </form>
+                    <span class="close-password-overlay" id="close-password-overlay">&times;</span>
+                </div>
+              </div> -->
+
+                            <!-- change password -->
+<div class="password-overlay" id="password-overlay">
+  <div class="password-wrapper">
+    <h3>Change Password</h3>
+
+    <form id="change-password-form" class="form-change-password">
+      <label for="current-password">Current password</label>
+      <input
+        type="password"
+        id="current-password"
+  
+        autocomplete="current-password"
+        required
+      >
+
+      <label for="new-password">New password</label>
+      <input
+        type="password"
+        id="new-password"
+   
+        autocomplete="new-password"
+        required
+      >
+
+      <label for="confirm-password">Retype password</label>
+      <input
+        type="password"
+        id="confirm-password"
+    
+        autocomplete="new-password"
+        required
+      >
+
+      <p id="change-password-message" class="change-password-message"></p>
+
+      <button type="submit" class="btn-change-password" id="btn-change-password">
+        Change password
+      </button>
+    </form>
+
+    <span class="close-password-overlay" id="close-password-overlay">&times;</span>
+  </div>
+</div>
+
+     
+              <!-- log out overlay -->
+               <div class="password-overlay logout-overlay" id="logout-overlay">
+                <div class="password-wrapper logout-box">
+                    <img src="icons/logout (1).png" alt="log-out png">
+                    <p>Are you sure to log out? you will be redirected to login page.</p>
+                    <div class="flex-log-out">
+                        <button class="btn-no" id="btn-no">No, Cancel</button>
+                        <button class="btn-yes" id="btn-yes-logout" onclick="logout()">Yes, Logout</button>
+                    </div>
+
+                </div>
+               </div>
+
+               <div id="reset-password-modal" class="reset-password-modal-overlay" style="display:none;">
+                <div class="reset-password-modal-box">
+                  <div class="reset-password-modal-header">
+                    <h3>Reset Staff Password</h3>
+                    <button id="close-reset-password-modal" type="button">&times;</button>
+                  </div>
+              
+                  <div class="reset-password-modal-body">
+                    <div class="input-group">
+                      <label for="reset-staff-email">Staff Email</label>
+                      <input
+                        type="email"
+                        id="reset-staff-email"
+                        placeholder="Enter staff email"
+                        autocomplete="off"
+                      />
+                   
+                    </div>
+              
+                    <div class="input-group">
+                      <label for="reset-staff-new-password">New Temporary Password</label>
+                      <input
+                        type="password"
+                        id="reset-staff-new-password"
+                        placeholder="Enter new password"
+                        autocomplete="new-password"
+                      />
+                      <i class="fa-solid fa-eye" id="new-pass-view"></i>
+                    </div>
+              
+                    <div class="input-group">
+                      <label for="reset-staff-confirm-password">Confirm Password</label>
+                      <input
+                        type="password"
+                        id="reset-staff-confirm-password"
+                        placeholder="Confirm new password"
+                        autocomplete="new-password"
+                      />
+                      <i class="fa-solid fa-eye" id="new-pass-confirm"></i>
+                    </div>
+              
+                    <p id="reset-password-feedback"></p>
+              
+                    <div class="reset-password-modal-actions">
+                      <button id="submit-reset-password-btn" type="button">Reset Password</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+     <!-- <div class="messages" id="success-alert">
+        <p>Login successful</p>
+     </div>
+
+         <div class="success-message-show" id="success-show">
+      
+    </div> -->
+
+    <div class="error-message-show" id="error-show">
+     
+    </div>
+
+    <!-- feedback messages -->
+    <div id="form-feedback" class="form-feedback"></div>
+
+<!-- <i class="fa-solid fa-print"></i>
+<i class="fa-solid fa-eye"></i>
+<i class="fa-solid fa-pen-to-square"></i>
+<i class="fa-solid fa-calendar"></i>
+<i class="fa-solid fa-xmark"></i>
+<i class="fa-solid fa-trash"></i>
+<i class="fa-solid fa-rotate-right"></i> 
+<i class="fa-solid fa-bars"></i>
+<i class="fa-solid fa-comment"></i>
+<i class="fa-solid fa-comment"></i> -->
+
+
+    
+<!-- CRIGSCHOOL2026  database password-->
+
+    <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <script src="app.js" type="text/javascript" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+    <script src="../data/charts.js"></script>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script> 
+ <script src="../data/supabase.js" defer></script>
+ <script src="../data/studentSorting.js" defer></script>
+ <script src="../data/realtimeSync.js" defer></script>
+ <script src="../data/confirmDialog.js" defer></script>
+ <script src="../data/authenticPage.js" defer></script>
+ <script src="../data/createStudent.js" defer></script>
+ <script src="../data/studentList.js" defer></script>
+ <script src="../data/teachersManagement.js" defer></script>
+ <script src="../data/assignSubjects.js" defer></script>
+ <script src="../data/classTeacherData.js" defer></script>
+ <script src="../data/showAssignedTeacher.js" defer></script>
+ <script src="../data/attendanceDaysSet.js" defer></script>
+ <script src="../data/academicYears.js" defer></script>
+ <script src="../data/scoreSheetDataAdmin.js" defer></script>
+ <script src="../data/broadSheetData.js" defer></script>
+ <script src="../data/meritOrderData.js" defer></script>
+ <script src="../data/studentTerminal.js" defer></script>
+ <script src="../data/promotionData.js" defer></script>
+ <script src="../data/currentTermsData.js" defer></script>
+ <script src="../data/reports_SettingsData.js" defer></script>
+ <script src="../data/termDaysData.js" defer></script>
+ <script src="../data/attendanceLoadData.js" defer></script>
+ <script src="../data/newPasswordReset.js" defer></script>
+  <script src="../data/assessmentData.js" defer></script>
+   <script src="../data/showMyData.js" defer></script>
+   <script src="../data/createTeacher.js" defer></script>
+   <script src="../data/adminAlerts.js" defer></script>
+  <script src="../teacher_page/script/changePassword.js" defer></script>
+ <!-- <script src="../teacher_page/script/dashboardData.js" defer></script> -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+      protectPage("admin_page");
+  });
+</script>
+
+<!-- <script>
+  protectAdmin();
+</script> -->
+
+      
+     
+</body>
+</html>
