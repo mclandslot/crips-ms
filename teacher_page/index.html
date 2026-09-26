@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crips-ms</title>
+  <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="../data/confirmDialog.css">
+    <!-- installable app: manifest, home-screen icons, service worker -->
+    <meta name="theme-color" content="#1b4332">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CRIPS MS">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="../app-icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="../app-icons/apple-touch-icon.png">
+    <script src="../pwa.js"></script>
+</head>
+<body>
+
+    <!-- loading app -->
+     <div class="load-page" id="loader">
+        <div class="content-card">
+            <div class="loader">
+                <div class="inner-pin"></div>
+            </div>
+            <p>Loading App....</p>
+        </div>
+     </div>
+
+
+  <div class="sidebar-wrapper" id="mobile-menu">
+      <div class="side-bar sm-screen">
+
+            <div class="admin-content">
+                <span class="CRIP-logo">
+                    <img src="icons/CRIG-LOGO1.png" alt="picture" width="40px">
+                </span>
+                <div class="school-infor">
+                    <h3 class="system-name">CRIPS-MS</h3>
+                
+                </div>
+            </div>
+
+
+            <div class="navigation-container">
+
+                <div class="nav-card dash">
+                <ul>
+                    <li class="nav-links active" onclick="homeDashShow()"><i class="fa-solid fa-house"></i>Dashboard</li>
+                </ul>
+                </div>
+
+             <div class="nav-card">
+                <p>Classes & Subjects</p>
+                <ul>
+                    <li class="nav-links" onclick="allStudentsNames()"><i class="fa-solid fa-address-book"></i>Class List</li>
+                    <li class="nav-links" onclick="allClassSubjects()" id="class__subject-card"><i class="fa-solid fa-book-bible"></i>Class & Subjects</li>
+                </ul>
+            </div>
+
+              <div class="nav-card">
+                <p>Marks Reports</p>
+                <ul>
+                    <!-- <li>CLass Lists</li> -->
+                    <li class="nav-links" onclick="marksEnteringShow()"><i class="fa-solid fa-pen"></i>Enter Marks</li>
+                    <li class="nav-links" onclick="viewScoreSheet()"><i class="fa-solid fa-book-open"></i> Score Sheet</li>
+                    <li class="nav-links"  id="manage-student-assigned-class-report" onclick="showStudentReportsDash()"><i class="fa-solid fa-book-open"></i> Terminal Reports</li>
+                </ul>
+            </div>
+
+             <div class="nav-card" id='attendance-link-card'>
+                <p>Attendance</p>
+                <ul>
+                    <li class="nav-links" onclick="attendance()"><i class="fa-solid fa-pen"></i>Mark Attendance</li>
+                    <li class="nav-links" onclick="attendanceReview()"><i class="fa-solid fa-business-time"></i>View Attendance</li>
+                </ul>
+            </div>
+
+            </div>
+
+
+            <div class="active-person">
+           <div class="profile-active-green-card">
+             <div class="profile-picture"></div>
+            <span class="color-green"></span>
+           </div>
+
+            <div class="active-person-card">
+                <h3 class="active-person-name" id="logged-teacher-name"></h3>
+                <p class="email-text" id="logged-email"></p>
+            </div>
+            </div>
+
+        </div>
+      
+         
+  </div>
+
+
+  
+
+  <!-- accounts box model -->
+    <div class="account-model-box" id="account-model-box">
+        <div class="card-p">
+            <p><i class="fa-solid fa-circle-user"></i>Accounts</p>
+        </div>
+        <div class="account-links">
+            <ul>
+                <li id="darkToggle"><i class="fa-solid fa-circle-half-stroke"></i>Change theme</li>
+                <li id="signature-body"><i class="fa-solid fa-signature"></i>My signature</li>
+                <li id="password-body"><i class="fa-solid fa-lock"></i>Change password</li>
+                <li id="log-out-body"><i class="fa-solid fa-right-to-bracket"></i>Log out</li>
+                <li id="close-accounts"><i class="fa-solid fa-xmark"></i>Close</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="main-dashboard">
+                        <div class="dashboard-card-header">
+                            <div class="left-header">
+                                <div class="icon-menu" id="toggle-in-menu">
+                                <i class="fa-solid fa-bars"></i>
+                            </div>
+                            <h3 class="dash-text" id="show-user-full-name"></h3>
+                            </div>
+                            <div class="right-card-icons">
+                                <div class="small-account-notes-icon">
+                                    <i class="fa-solid fa-circle-user" id="show-accounts"></i>
+                                    <i class="fa-solid fa-bell" id="show-notice"></i>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="show-all-content home" id="home">
+                            <div class="intro-dash">
+                                <h3 class="bold-h3">Dashboard</h3>
+                                <p class="bold-p">Manage assigned students</p>
+
+                                        <div class="status-container dash-stats">
+                                            <div class="status-card mb-dash">
+                                                <div class="hat"><i class="fa-solid fa-users"></i></div>
+                                                <div class="status-card-text">
+                                                    <p>Total Students</p>
+                                                    <h2 id="total-assigned-students"></h2>
+                                                </div>
+                                            </div>
+
+                                            <div class="status-card mb-dash">
+                                                <div class="hat"><i class="fa-solid fa-book-open"></i></div>
+                                                <div class="status-card-text">
+                                                    <p>Total Subjects</p>
+                                                    <h2 id="total-assigned-subjects"></h2>
+                                                </div>
+                                            </div>
+
+                                            <div class="status-card mb-dash">
+                                                <div class="hat"><i class="fa-solid fa-layer-group"></i></div>
+                                            <div class="status-card-text">
+                                                <p>Total Class</p>
+                                                <h2 id="total-assigned-class"></h2>
+                                            </div>
+                                            </div>
+                                    </div>
+
+                                    <div class="assigned-container">
+                                        <h3>Assigned Class</h3>
+                                        <p class="bold-p">Assigned Class</p>
+                                        <div class="assign-card-flex" id="dashboard-assigned-classes"></div>
+                                    </div>
+
+                                       <div class="assigned-container">
+                                        <h3>Assigned Subjects</h3>
+                                        <p class="bold-p">Assigned Subjects</p>
+                                        <div class="assign-card-flex" id="dashboard-assigned-subjects"></div>
+                                    </div>
+                            </div>
+
+                            <div class="space-bottom-class-subject"></div>
+                        </div>
+
+
+                        <!-- attendance view content -->
+                             <div class="show-all-content review-attendance" id="viewMarkAttendance">
+                            <div class="intro-dash">
+                               <h4 class="bold-h3">Class Attendance</h4>
+                                    <p class="bold-p">Track student attendance</p>
+                                    <p class="bold-p" id="term-name"></p>
+
+                                 <div class="mark-list-attendance">
+                                                <table class="attendance-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Student</th>
+                                                        <th>Days Present</th>
+                                                        <th>Days Absent</th>
+                                                        <th>Attendance %</th>
+                                                        <!-- <th>Date Marked</th> -->
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody id="display-attendance-data-table">
+                                                    <!-- <tr>
+                                                    <td><span class="mob-title" id="students-name-class"></td>
+                                                        <td><span class="mob-title" id="presents-days">Presents:</span>67</td>
+                                                        <td><span class="mob-title" id="absents-day">Absents:</span>1</td>
+                                                        <td><span class="mob-title" id="tatal-presents-day">Total days:</span>67/68</td>
+                                                    </tr> -->
+
+                                                    </tbody>
+                                                </table>
+                                              </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- classes and subject content -->
+                          <div class="show-all-content class-subject" id="class-subjects">
+                            <div class="intro-dash">
+                                <h3 class="bold-h3">Class & Subjects</h3>
+                                <p class="bold-p">Assigned class and subjects</p>
+
+                                    
+
+                                            <div class="assigned-container">
+                                        <h3>Assigned Class</h3>
+                                        <p class="bold-p">Assigned Class/es</p>
+                                        <div class="assign-card-flex" id="class-subjects-assigned-classes"></div>
+                                    </div>
+
+                                       <div class="assigned-container">
+                                        <h3>Assigned Subjects</h3>
+                                        <p class="bold-p">Assigned Subjects</p>
+                                        <div class="assign-card-flex" id="class-subjects-assigned-subjects"></div>
+                                    </div>
+                                </div>
+                                <div class="space-bottom-class-subject"></div>
+
+
+                        </div>
+
+
+                        
+                        <!-- classes list content -->
+                          <div class="show-all-content class-name" id="class-name">
+                            <div class="intro-dash">
+                                <h3 class="bold-h3">Class List</h3>
+                                <p class="bold-p">Students name</p>
+
+                                       <div class="assigned-container">
+                                            <div class="assigned-card">
+                                                    <div class="class-select-box">
+                                                        <p class="p-select">Select class to view students</p>
+                                                         <div class="form-group">
+                                                    <div class="form-select">
+                                                        <select name="student-class" class="select-opt" id="select-student-classes-assigned">     
+                                                        </select>
+                                                        <div class="arrow-icon">
+                                                            <i class="fa-solid fa-caret-down"></i>
+                                                        </div>
+                                                    </div>
+
+                                                    <button class="btn-class-show" id="btn-show-student-list-for-class">View class list</button>
+                                                </div>
+                                                    </div>
+                                                <!-- <div class="search-card">
+                                                        <label for="">Search by name:</label>
+                                                        <input type="text">
+                                                </div> -->
+                                            </div>
+
+                                            <div class="student-names-wrapper" id="student-names-wrapper">
+                                                <h3 class="bold-h2">Students List</h3>
+                                                <div class="student-selected-container">
+                                                    <h4 id="selected-class-name">Selected Class</h4>
+                                                </div>
+
+                                            </div>
+                                    </div>
+                            </div>
+
+                        </div>
+
+
+
+
+
+                            
+                        <!-- reports cards and remarks -->
+                          <div class="show-all-content reportsCardDash" id="report-remarks-dash">
+                            <div class="intro-dash">
+                                <h3 class="bold-h3">Report Card</h3>
+                                <p class="bold-p">Students marks, overall total and position</p>
+
+                                <div class="teacher-report-wrapper">
+  <div class="teacher-report-top">
+    <div class="teacher-report-title-box">
+      <div class="report-icon"><i class="fa-solid fa-chart-column"></i></div>
+      <div>
+        <h2>Class Performance Report</h2>
+        <p class="report-subtitle">Overall student results &amp; positions</p>
+      </div>
+    </div>
+
+    <div class="teacher-report-meta">
+      <div class="report-meta-chip">
+        <span class="report-meta-label">Class</span>
+        <span class="report-meta-value" id="assigned-class-report-name">-</span>
+      </div>
+      <div class="report-meta-chip">
+        <span class="report-meta-label">Term</span>
+        <span class="report-meta-value" id="assigned-class-report-term">-</span>
+      </div>
+      <div class="report-meta-chip">
+        <span class="report-meta-label">Academic Year</span>
+        <span class="report-meta-value" id="assigned-class-report-year">-</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="teacher-report-cards" id="teacher-report-cards"></div>
+</div>
+
+<!-- REMARK MODAL -->
+<div id="class-remark-modal" class="remark-modal-overlay">
+  <div class="remark-modal">
+    <div class="remark-modal-header">
+      <h3>Student Remark</h3>
+      <button type="button" id="close-class-remark-modal">&times;</button>
+    </div>
+
+    <div class="remark-modal-body">
+      <div class="remark-student-info">
+        <div class="remark-info-item">
+          <span class="remark-info-label">Student</span>
+          <span class="remark-info-value" id="remark-student-name">-</span>
+        </div>
+        <div class="remark-info-item">
+          <span class="remark-info-label">Overall Marks</span>
+          <span class="remark-info-value" id="remark-student-overall">-</span>
+        </div>
+        <div class="remark-info-item">
+          <span class="remark-info-label">Position</span>
+          <span class="remark-info-value" id="remark-student-position">-</span>
+        </div>
+      </div>
+
+      <div class="remark-select-grid">
+        <div class="form-group">
+          <input type="text" class="form-input" name="conduct" id="selected-conduct" placeholder="Enter conduct">
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-input" name="attitude" id="selected-attitude" placeholder="Enter attitude">
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-input" name="interest" id="selected-interest" placeholder="Enter interest">
+        </div>
+
+     <div class="form-group">
+           <div class="form-select">
+          <select name="gender" class="select-opt" id="selected-promotion-class">
+            <option value="">Select next class</option>
+            <option value="PRIMARY 1">PRIMARY 1</option>
+            <option value="PRIMARY 2">PRIMARY 2</option>
+            <option value="PRIMARY 3">PRIMARY 3</option>
+            <option value="PRIMARY 4">PRIMARY 4</option>
+            <option value="PRIMARY 5">PRIMARY 5</option>
+            <option value="PRIMARY 6">PRIMARY 6</option>
+            <option value="JHS 1">JHS 1</option>
+            <option value="REPEATED">REPEATED</option>
+
+        </select>
+          <div class="arrow-icon">
+              <i class="fa-solid fa-caret-down"></i>
+            </div>
+     </div>
+   </div>
+      </div>
+
+      <textarea
+        id="class-teacher-remark-text"
+        rows="5"
+        placeholder="Enter class teacher's remark"
+      ></textarea>
+    </div>
+
+    <div class="remark-modal-footer">
+      <button type="button" id="save-class-remark-btn" class="btn-save-remarks">Save Remark</button>
+    </div>
+  </div>
+</div>
+
+                                   
+                            </div>
+
+                        </div>
+
+
+
+
+                            <!-- marks content box -->
+                                <div class="show-all-content mark-entering" id="marks-entering">
+                                        <div class="intro-dash">
+                                        <h3 class="bold-h3">Marks Entering</h3>
+                                        <p class="bold-p">Manage student grades efficiently</p>
+
+                                        <div class="selected-subject-container">
+                                            <div class="selected-card">
+                                            <div class="flex-class">
+                                            <!-- <div class="hat"><i class="fa-solid fa-graduation-cap"></i></div> -->
+                                            <div class="class-text">
+                                                <!-- <h3>Select Class</h3> -->
+                                            <p>Choose a class to enter marks</p>
+                                            </div>
+                                            </div>
+                                                <div class="form-group">
+                                                    <div class="form-select">
+                                                        <select name="gender" class="select-opt" id="selected-class-assigned-option">
+
+                                                        </select>
+                                                        <div class="arrow-icon">
+                                                            <i class="fa-solid fa-caret-down"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="selected-card">
+
+                                                <div class="flex-class">
+                                                    <!-- <div class="hat"><i class="fa-solid fa-book-open"></i></div> -->
+                                                    <div class="class-text">
+                                                        <!-- <h3>Select Subject</h3> -->
+                                                    <p>Choose a subject to enter marks</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                        <div class="form-select">
+                                                            <select name="gender" class="select-opt" id="selected-subject-assigned-option">
+                                                            </select>
+                                                                <div class="arrow-icon">
+                                                                    <i class="fa-solid fa-caret-down"></i>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="load-students-data" id="load-students-data-btn">Load Students</button>
+
+
+                                        </div>
+
+                                        </div>
+
+                                
+
+                                        <!-- marks table -->
+                                        <div class="marks-container" id="marks-container">
+                                            <div class="card-header">
+                                                <div>
+                                                <h2>Marks Entry - <span id="selected-subject"></span></h2>
+                                                <p><span id="marks-selected-class-name"></span> • <span id="total-student-show-text"></span></p>
+                                                </div>
+                                           
+                                            </div>
+
+                                            <div class="table-wrapper">
+                                                <table>
+                                                <thead id="marks-entering-head">
+                                                    <tr>
+                                                    <th>ROLL NO</th>
+                                                    <th>STUDENT NAME</th>
+                                                    <th>CLASS SCORE (50%)</th>
+                                                    <th>EXAM SCORE (50%)</th>
+                                                    <th>TOTAL</th>
+                                                    <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="marks-entering-data">
+
+
+                                                        </tbody>
+                                                </table>
+                                            </div>
+
+                                    
+                                        </div>
+
+                                     </div>
+
+
+
+                                     
+
+
+
+
+                                     <!-- attendance marking for daily -->
+                                    <div class="show-all-content Attendance-marking" id="Attendance-marking">
+
+                                        <div class="intro-dash">
+                                            <h4 class="bold-h3">Daily Attendance</h4>
+                                            <p class="bold-p">Mark and track student attendance</p>
+
+                                            
+                                            <div class="date-container">
+                                                <div class="attend-container">
+
+                                                    <div class="selected-card small-padding">
+                                                        <div class="flex-class">
+                                                        <!-- <div class="hat"><i class="fa-solid fa-calendar"></i></div> -->
+                                                        <div class="class-text">
+                                                            <!-- <h4>Select Date</h4> -->
+                                                        <!-- <p>Choose a date</p> -->
+                                                        </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="dob">Attendance Date</label>
+                                                            <input type="date" class="form-input" name="attendance" id="datePickerDate">
+                                                        </div>
+                                                    </div>
+
+                                                    
+                                                    <div class="selected-card small-padding">
+                                                        <div class="flex-class">
+                                                        <!-- <div class="hat"><i class="fa-solid fa-users"></i></div> -->
+                                                        <div class="class-text">
+                                                            <h4 id="assigned-class-name"></h4>
+                                                        <!-- <p>Class to mark attendance</p> -->
+                                                        </div>
+                                                        </div>
+                                                        
+                                                            <div class="flex-p">
+                                                                <p class="date-p-s">Total students: <span id="display-assign-class-total-student"></span></p>
+                                                            </div>
+                                                          <div class="inline-flex-buttons">
+                                                              
+                                                              <select id="term-select"></select>
+                                                            </div>
+                                                        </div>
+                                                           
+                                                    </div>
+                                                    <button class="mark-attendance-btn" id="mark-attendance-shown-btn">Mark Attendance</button>
+
+                                                    <p class="attendance-locked-notice" id="attendance-locked-notice" hidden>
+                                                        <i class="fa-solid fa-circle-info"></i>
+                                                        Total days for this term has not been set by the admin, so attendance cannot be marked yet.
+                                                    </p>
+
+                                        
+                                                <div class="shows-attendance-list" id="shows-attendance-list">
+                                                    <div class="shows-headers">
+                                                            <div class="flex-class">
+                                                                <div class="hat"><i class="fa-solid fa-layer-group"></i></div>
+                                                                <div class="class-text">
+                                                                    <p><b>Mark Attendance</b></p>
+                                                                <p>Select present or absent for each student</p>
+                                                                </div>
+                                                        </div>
+
+                                                        <!-- <h4 id="assigned-class-name">Class: ---</h4> -->
+<!-- 
+                                                        <div class="flex-right">
+                                                            <button><i class="fa-solid fa-circle-check" id="mark-all-student-present-btn"></i> Mark all present</button>
+                                                            <select id="term-select"></select>
+                                                        </div> -->
+                                                    </div>
+
+                                                    <div class="shows-attendance-status" >
+                                                        <div class="attend-status-card presents">
+                                                            <div class="flex-p-card">
+                                                                <p>Presents</p>
+                                                            <h4 id="total-present-students"></h4>
+                                                            </div>
+                                                            <div class="check-icon pre">
+                                                                <i class="fa-solid fa-circle-check"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="attend-status-card absents">
+                                                            <div class="flex-p-card">
+                                                                <p>Absents</p>
+                                                            <h4 id="total-absents-students"></h4>
+                                                            </div>
+                                                            <div class="check-icon abs">
+                                                                <i class="fa-solid fa-circle-xmark"></i>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="attend-status-card days">
+                                                            <div class="flex-p-card">
+                                                                <p>Days</p>
+                                                            <h4 id="total-set-days"></h4>
+                                                            </div>
+                                                            <div class="check-icon day">
+                                                                <i class="fa-solid fa-circle-xmark"></i>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="mark-list-attendance" id="mark-list-attendance">
+                                                        <div class="student-row">
+                                                        <span class="roll"></span>
+                                                        <span class="name" id="assigned-classlist-students"></span>
+                                                        <!-- <div class="actions">
+                                                            <button class="present" id="present-btn"><i class="fa-solid fa-circle-check"></i>Present</button>
+                                                            <button class="absent" id="absent-btn"><i class="fa-solid fa-circle-xmark"></i> Absent</button>
+                                                        </div> -->
+                                                        </div>
+
+                                                        
+
+                                                        <button class="save-btn save-all" id="save-attendance-btn">Save Attendance</button>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                        <!-- <i class="fa-solid fa-floppy-disk"></i> -->
+                             </div>
+
+
+                                     <!-- classes score sheet content -->
+                          <div class="show-all-content score-dash" id="sheet-Scores">
+                            <div class="intro-dash">
+                                <h3 class="bold-h3">Score Sheet</h3>
+                                <p class="bold-p">Student position on subject</p>
+
+                             <div class="score-sheet-subject">
+
+                                    <div class="score-form-group">
+                                        <p class="p-select">Select class</p>
+                                                        <div class="form-select">
+                                                            <select name="class" class="select-opt" id="class-to-view-marks-score">     
+                                                            </select>
+                                                                <div class="arrow-icon">
+                                                                    <i class="fa-solid fa-caret-down"></i>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                      <div class="score-form-group">
+                                          <p class="p-select">Select subject </p>
+                                                        <div class="form-select score-sheet-selection">
+                                                            <select name="gender" class="select-opt" id="subject-to-view-marks-score">
+                                                              
+                                                            </select>
+                                                                <div class="arrow-icon">
+                                                                    <i class="fa-solid fa-caret-down"></i>
+                                                                </div>
+                                                        </div>
+                                                    </div> 
+
+                                                </div>
+                                                <button class="load-students-data" id="view-marks-score-sheet-btn">View score sheet</button>
+
+                                    <div class="score-sheet-section-show" id="score-sheet-section-show">
+                                        <div class="sheet-section-header">
+                                            <h3 id="class-selected-name"></h3>
+                                        <h6 id="subject-selected-name"></h6>
+                                        <h6 id="term-name"></h6>
+                                        </div>
+
+                                          <div class="mark-list-attendance">
+                                                <table class="attendance-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>S/N</th>
+                                                        <th>Student Name</th>
+                                                        <th>Class Score</th>
+                                                        <th>Exams Score</th>
+                                                        <th>Total (100%)</th>
+                                                        <th>Position in Sub.</th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody id="score-sheet-table-body">
+                                                    <!-- <tr>
+                                                    <td><span class="mob-title">S/N</span>0</td>
+                                                    <td><span class="mob-title">Student Name:</span>PRINCES AKANKO</td>
+                                                        <td><span class="mob-title">Class Score:</span>45</td>
+                                                        <td><span class="mob-title">Exams Score</span>45</td>
+                                                        <td><span class="mob-title">Total (100%):</span>90</td>
+                                                        <td><span class="mob-title">Position in Subject:</span>1ST</td>
+                                                    </tr> -->
+                                                    </tbody>
+                                                </table>
+                                              </div>
+                                    </div>
+
+
+                                    </div>
+                            </div>
+
+                        </div>
+                             
+
+
+                     
+    </div>
+
+    
+
+
+              <!-- my signature -->
+<div class="password-overlay" id="signature-overlay">
+  <div class="password-wrapper signature-wrapper">
+    <h3>My Signature</h3>
+
+    <p class="signature-hint">
+      Upload a clear scan or photo of your signature. It prints on the terminal
+      reports of the class assigned to you. PNG with a transparent background
+      works best.
+    </p>
+
+    <div class="signature-preview-box" id="signature-preview-box">
+      <p class="signature-empty-text" id="signature-empty-text">No signature uploaded yet.</p>
+      <img id="signature-preview-img" src="" alt="my signature" style="display:none;">
+    </div>
+
+    <label for="signature-file-input" class="signature-file-label">
+      <i class="fa-solid fa-image"></i> Choose signature image
+    </label>
+    <input type="file" id="signature-file-input" accept="image/png, image/jpeg, image/webp">
+    <p class="signature-file-name" id="signature-file-name"></p>
+
+    <p id="signature-message" class="change-password-message"></p>
+
+    <div class="signature-buttons">
+      <button type="button" class="btn-change-password" id="save-signature-btn">
+        Save signature
+      </button>
+      <button type="button" class="btn-remove-signature" id="remove-signature-btn">
+        Remove
+      </button>
+    </div>
+
+    <span class="close-password-overlay" id="close-signature-overlay">&times;</span>
+  </div>
+</div>
+
+
+              <!-- change password -->
+<div class="password-overlay" id="password-overlay">
+  <div class="password-wrapper">
+    <h3>Change Password</h3>
+
+    <form id="change-password-form" class="form-change-password">
+      <label for="current-password">Current password</label>
+      <input
+        type="password"
+        id="current-password"
+  
+        autocomplete="current-password"
+        required
+      >
+
+      <label for="new-password">New password</label>
+      <input
+        type="password"
+        id="new-password"
+   
+        autocomplete="new-password"
+        required
+      >
+
+      <label for="confirm-password">Retype password</label>
+      <input
+        type="password"
+        id="confirm-password"
+    
+        autocomplete="new-password"
+        required
+      >
+
+      <p id="change-password-message" class="change-password-message"></p>
+
+      <button type="submit" class="btn-change-password" id="btn-change-password">
+        Change password
+      </button>
+    </form>
+
+    <span class="close-password-overlay" id="close-password-overlay">&times;</span>
+  </div>
+</div>
+
+
+
+              <!-- report marks -->
+               
+
+
+
+
+              <!-- log out overlay -->
+               <div class="password-overlay logout-overlay" id="logout-overlay">
+                <div class="password-wrapper logout-box">
+                    <img src="icons/logout (1).png" alt="log-out png">
+                    <p>Are you sure to log out? you will be redirected to login page.</p>
+                    <div class="flex-log-out">
+                        <button class="btn-no" id="btn-no">No, Cancel</button>
+                        <button class="btn-yes" id="btn-yes-logout" onclick="logout()">Yes, Logout</button>
+                    </div>
+
+                </div>
+               </div>
+
+
+               <!-- notification overlay box -->
+                <div class="notification-wrapper" id="notification-wrapper">
+                    <div class="notice-header">
+                        <h4>Notification</h4>
+                        <span id="close-notice-wrapper">&times;</span>
+                    </div>
+
+                    <div class="notice-body">
+                        <!-- the term the admin has set, filled by teacherNotices.js -->
+                        <div class="term-notice-card" id="teacher-term-card">
+                            <p class="term-notice-label">Current term</p>
+                            <h5 class="term-notice-term" id="teacher-current-term">Checking.......</h5>
+                            <p class="term-notice-year" id="teacher-current-year"></p>
+                            <p class="term-notice-dates" id="teacher-term-dates"></p>
+                        </div>
+
+                        <ul class="notice-list" id="teacher-notices-list"></ul>
+                    </div>
+                </div>
+
+                <div id="form-feedback" class="form-feedback"></div>
+
+
+
+    <script src="app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
+     <script src="../data/supabase.js"></script>
+     <script src="../data/confirmDialog.js"></script>
+     <script src="../data/realtimeSync.js"></script>
+     <script src="../data/studentSorting.js"></script>
+     <script src="script/teacherNotices.js"></script>
+     <script src="script/protectTeacherPage.js"></script>
+     <script src="script/dashboardData.js"></script>
+     <script src="script/studentClassDataList.js" defer></script>
+     <script src="script/checkTeacherStatus.js"></script>
+     <script src="script/attendanceMarkingData.js"></script>
+     <script src="script/marksEnteringData.js"></script>
+     <script src="script/scoreSheetData.js"></script>
+     <script src="script/reportViewDataTeacher.js"></script>
+     <script src="script/reportsRemarks.js"></script>
+     <script src="../data/loggedUserData.js"></script>
+     <script src="script/changePassword.js"></script>
+     <script src="../data/staffSignature.js"></script>
+     <!-- <script src="../data/classTeacherData.js"></script> -->
+     <script src="loginOut.js" ></script>
+</body>
+</html>
+
+
+

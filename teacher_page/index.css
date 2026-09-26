@@ -1,0 +1,3680 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root{
+    /* ---- Core palette ---- */
+    --green-900: #1b4332;
+    --green-700: #2d6a4f;
+    --green-500: #52b788;
+    --green-100: #d8f3dc;
+    --earth-500: #d68c45;
+    --earth-700: #a96a2c;
+    --bg: #f7f9f4;
+    --surface: #ffffff;
+    --text: #1f2a24;
+    --text-muted: #6b7770;
+    --border: #e3e8e1;
+    --danger: #c0392b;
+    --warning: #e67e22;
+    --info: #2980b9;
+    --shadow: 0 2px 8px rgba(27, 67, 50, 0.06);
+    --radius: 10px;
+
+    /* ---- Component tokens, mapped onto the palette ---- */
+    --font-color: var(--green-900);
+    --transition: all .3s ease-in-out;
+    --side-bar-bg: var(--green-900);
+    --top-text-color: var(--green-900);
+    --circle-active: var(--green-500);
+    --bottom-active-box: var(--green-900);
+    --bold-text-color: var(--text);
+    --light-text-color: var(--green-100);
+    --main-container: var(--bg);
+    --btn-logout: var(--danger);
+    --btn-linear-mix: var(--danger);
+    --btn-add-bg: var(--green-700);
+    --pending-btn-span: var(--warning);
+    --h-text-color: var(--text);
+    --color: var(--surface);
+    --students: var(--green-100);
+    --teachers: #fbeee0;
+    --male: #f7e8eb;
+    --female: #e7f6ff;
+    --primary-btn: var(--green-700);
+    --border-sm: 1px solid var(--border);
+    --btn-danger: var(--danger);
+      --dashboard-card-header: var(--surface);
+      --active-person: var(--green-700);
+      --account-model: var(--green-700);
+      --intro-dash: var(--surface);
+      --bold-h3: var(--text);
+      --header-card-texts: var(--green-700);
+      --bold-p: var(--text-muted);
+      --status-card: var(--green-100);
+      --selected-card: #c7ead4;
+      --border-all: var(--border);
+      --border-radius: 5px;
+      --btn-padding: .5rem .7rem;
+      --btn-family: poppins;
+      --btn-color: #fff;
+      --input-border: 1px solid var(--border);
+      --refresh-btn: var(--earth-500);
+      --btn-border: 0;
+      --hover: 80%;
+       --border-color: var(--border);
+       --assign-card-border: #d3ddd6;
+       --subs-h4: var(--text);
+}
+
+body.dark{
+  /* Dark surfaces stay in the same green family as the light theme */
+  --bg: #0f1512;
+  --surface: #151d18;
+  --text: #e4ece8;
+  --text-muted: #a2b3aa;
+  --border: #223029;
+
+  --font-color: var(--green-500);
+  --side-bar-bg: #0b1a13;
+  --top-text-color: var(--green-100);
+  --circle-active: var(--green-500);
+  --bottom-active-box: #0a1710;
+  --bold-text-color: var(--text);
+  --light-text-color: var(--text-muted);
+  --main-container: var(--bg);
+  --btn-logout: #ef4444;
+  --btn-linear-mix: #ef4444;
+  --btn-add-bg: var(--green-700);
+  --pending-btn-span: var(--earth-500);
+  --h-text-color: var(--text);
+  --color: var(--text);
+  --students: #022c22;
+  --teachers: #2a1d0c;
+  --male: #2a1020;
+  --female: #0c1f33;
+  --primary-btn: var(--green-700);
+  --border-sm: 1px solid var(--border);
+  --dashboard-card-header: var(--surface);
+   --active-person: #04150e;
+    --account-model: rgb(12, 12, 12);
+    --intro-dash: #161616;
+     --bold-h3: #e6efe9;
+       --header-card-texts: #ffffff;
+        --bold-p: var(--text-muted);
+         --status-card:  #111111;
+          --selected-card: #242424;
+           --border-all: var(--green-700);
+           --border-color: var(--border);
+             --assign-card-border: #3a4a41;
+              --subs-h4: #000;
+
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    width: 100%;
+    height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+body, 
+.side-bar, 
+.main-dashboard, 
+.show-all-content,
+.status-card,
+.selected-card,
+.marks-container {
+  transition: var(--transition);
+}
+
+.load-page{
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: white;
+  z-index: 10;
+  display: none;
+}
+.content-card{
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.loader{
+  width: 40px;
+  height: 40px;
+  border: 2px solid #c8e6d4;
+  border-radius: 50%;
+  position: relative;
+  animation: auto-load 1s linear infinite;
+}
+.inner-pin{
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 8px;
+  height: 5px;
+  background-color: rgb(250, 250, 249);
+  display: block;
+}
+@keyframes auto-load {
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+.sm-screen{
+  display: none;
+}
+.large-screen{
+  display: none;
+}
+
+.side-bar {
+  width: 250px;
+  height: 100vh;
+  background: var(--side-bar-bg);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 4rem;
+}
+
+/* FULL WIDTH TOP AREA */
+.admin-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--active-person);
+   padding: 5px 10px;
+}
+.CRIP-logo{
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: white;
+  overflow: hidden;
+}
+.CRIP-logo img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.school-infor h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#subjects-assigned-name{
+  color: var(--subs-h4);
+}
+
+/* ACTIVE PERSON */
+.active-person {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 250px;
+  background: var(--active-person);
+  padding: 5px 10px;
+  /* border-radius: 10px; */
+}
+
+/* PROFILE IMAGE */
+.profile-active-green-card {
+  position: relative;
+}
+
+.profile-picture {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #cfddd6;
+  background-image: url("icons/default-avatar.png"); 
+  background-size: cover;
+  background-position: center;
+}
+
+/* ONLINE INDICATOR */
+.color-green {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: #3aad77;
+  border-radius: 50%;
+  border: 2px solid #0b1e15;
+}
+
+.active-person-card h3 {
+  font-size: 14px;
+}
+
+.email-text {
+  font-size: 12px;
+  color: #98b4a7;
+}
+
+.back-close-wrapper{
+  position: absolute;
+  top: 2%;
+  right: 30%;
+  -ms-transform-origin-x: -30%;
+  -ms-transform-origin-y: -2%;
+  transform: translate(-30%, -2%);
+  /* background-color: white; */
+  /* padding: 5px 7px; */
+  border-radius: 4px;
+  display: flex;
+}
+.back-close-wrapper i{
+  color: white;
+  font-size: 1.5rem;
+}
+
+.right-card-icons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+}
+.small-account-notes-icon{
+  display: flex;
+  gap: 1rem;
+  font-size: 1.3rem;
+  color: var(--header-card-texts);
+}
+.small-account-notes-icon i{
+  cursor: pointer;
+  transition: var(--transition);
+}
+.small-account-notes-icon i:hover{
+  color: #80cfaa;
+}
+
+/* account-model-box style */
+.account-model-box{
+  position: absolute;
+  top: 5%;
+  right: 2%;
+  transform: translate(-5%, -5%);
+  min-width: 180px;
+  background: var(--account-model);
+  display: none;
+  z-index: 5;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  transition: var(--transition);
+  border-radius: 5px;
+}
+.card-p{
+  padding: 7px;
+  border-bottom: 1px solid rgb(255, 255, 255);
+}
+.account-model-box p{
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  color: white;  
+}
+.account-links{
+  display: block;
+}
+.account-links ul{
+  width: 100%;
+}
+.account-links ul li{
+  display: block;
+cursor: pointer;
+  margin-bottom: 1px;
+  padding: 8px 5px;
+  color: white;
+  transition: var(--transition);
+}
+.account-links ul li i{
+ margin-right: 5px;
+}
+.account-links ul li:hover{
+  background-color: #348861;
+}
+
+
+
+
+/* MAIN DASHBOARD */
+.main-dashboard {
+    width:100%;
+  flex: 1;
+  background-color: var(--main-container);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  padding-top: 3.5rem;
+}
+
+/* DASHBOARD HEADER */
+.dashboard-card-header{
+  position: absolute;
+  top: 0;
+  left: 0;
+    width: 100%;
+    background: var(--dashboard-card-header);
+    padding: .8rem 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left-header{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+}
+
+.icon-menu{
+  display: none;
+  padding: 2px 7px;
+  background-color: #32855e;
+  color: white;
+  border-radius: 2px;
+  font-size: 1rem;
+}
+
+
+.dash-text {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--header-card-texts)
+}
+
+
+
+.navigation-container{
+    padding: 8px 10px;
+    color: #0e251a;
+}
+
+.nav-card p{
+    color: #8fd1b2;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: .9rem;
+    opacity: 80%;
+}
+
+
+
+.nav-card{
+    /* background-color: rgba(255, 255, 255, 0.11); */
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+    margin-block: .8rem;
+}
+
+.nav-card ul{
+    display: block;
+    width: 100%;
+}
+
+.nav-card ul li{
+    display: block;
+    margin-bottom: 2px;
+    padding: 7px 5px;
+    border-radius: 10px;
+    transition: all .3s ease-in-out;
+    cursor: pointer;
+    color: rgb(253, 252, 252);
+}
+
+.nav-card ul li:last-child {
+   border-bottom: none;
+}
+
+.nav-card ul li:hover{
+    background-color:  #32855e;
+    color: rgb(255, 255, 255);
+}
+
+.nav-card ul li.active{
+    background-color: #32855e;
+    color: white;
+    transition: var(--transition);
+}
+
+.nav-card i{
+    margin-right: .5rem;
+}
+
+.show-all-content{
+  width: 100%;
+  height: 100%;
+  background-color: var(--main-container);
+  padding: .5rem 2rem;
+  overflow-y: scroll;
+}
+
+.home{
+  display: block;
+}
+.bold-h3{
+  font-size: 1.8rem;
+  color: var(--bold-h3);
+  margin-bottom: .5rem;
+}
+.bold-p{
+  color: var(--bold-p);
+}
+
+.status-container{
+  margin-top: 1rem;
+  /* border: 1px solid rgb(240, 240, 240); */
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.status-card{
+  display: flex;
+  width: min(250px, 300px);
+  gap: 1rem;
+  padding: 1rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--bold-h3);
+  background: var(--status-card);
+}
+
+
+/* mark-entering */
+.mark-entering{
+  display: none;
+}
+.intro-dash{
+  background-color: var(--intro-dash);
+  padding: .5rem 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 2rem;
+}
+
+/* select style for custom options */
+.form-select{
+    position: relative;
+    width: 100%;
+    /* background-color: orange; */
+    display: flex;
+    border-radius: 5px;
+}
+
+.form-select select{
+    width: 100%;
+    padding: .5rem;
+    font-size: 1rem;
+    border: var(--border-sm);
+    appearance: none;
+    border-radius: 5px;
+}
+.form-select select option{
+    background-color: rgb(235, 234, 234);
+    color: rgb(18, 49, 35);
+}
+.arrow-icon{
+    position: absolute;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 100%;
+    background-color: #47b984;
+    color: white;
+    pointer-events: none;
+    cursor: pointer;
+     border-radius: 5px;
+}
+.form-select select:focus{
+    box-shadow: 0 0 8px rgba(52, 136, 97, 0.1);
+    outline: 1px solid #47b984;
+} 
+
+/* score-sheet-selection */
+.score-sheet-selection{
+  flex-direction: column;
+}
+
+.selected-subject-container{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 5px;
+  gap: 2rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 1rem;
+  /* background-color: orange; */
+  /* border: 1px solid #ccc; */
+  border-radius: var(--border-radius);
+}
+.selected-card{
+  width: 30%;
+  padding: .0rem 1rem;
+  background: var(--selected-card);
+  /* background-color: red; */
+  border-radius: 10px;
+  /* border: 1px solid var(--border-all); */
+}
+
+.p-select{
+  margin-bottom: .3rem;
+  font-size: 14px;
+  color: var(--bold-p);
+}
+
+.flex-class{
+  display: flex;
+  align-items: center;
+  /* gap: .5rem;
+  margin-bottom: .2rem; */
+  /* background-color: #2d6a4f; */
+}
+.hat{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  background: #daede4;
+  border-radius: 5px;
+}
+.hat i{
+  color: #47b984;
+}
+.class-text h3, .class-text h4{
+  color: var(--bold-h3);
+}
+.class-text p{
+  font-size: 14px;
+  color: var(--bold-p);
+}
+
+/* marks-container */
+.marks-container{
+  padding: 1rem;
+    background: var(--main-container);
+  margin-top: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  display: none;
+  border: var(--border-color);
+}
+
+/* table style */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--bold-h3);
+}
+
+.card-header p {
+  color: #648b79;
+  font-size: 14px;
+}
+
+.save-btn {
+  background: #33845e;
+  color: #fff;
+  border: none;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  border-bottom: 3px solid #41aa79;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all .3s ease-in-out;
+}
+.save-btn:hover{
+    background: #41aa79;
+}
+
+/* TABLE */
+.table-wrapper {
+  overflow-x: auto;
+  background-color: white;
+  padding-bottom: 2rem;
+  margin-bottom: .5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f6f9f7;
+}
+
+th {
+  text-align: left;
+  padding: 14px;
+  font-size: 12px;
+  color: #4a6659;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #e4ece8;
+  font-size: 14px;
+}
+
+.roll {
+  font-weight: 600;
+}
+
+/* STUDENT */
+.student {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  /* background-color: orange; */
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #25342d;
+  background: #e9f6f0;
+}
+
+/* INPUTS */
+.score {
+  width: 100px;
+  padding: 6px;
+  border-radius: 6px;
+  text-align: center;
+  border: 2px solid;
+  font-size: 14px;
+}
+
+/* the input and its "/ 50" are two elements in one cell, and the total is
+   "60" plus "/ 100". They are held together at every width so a narrow
+   column can never drop the second half onto its own line. */
+.score-field {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  white-space: nowrap;
+}
+
+#marks-entering-data td:nth-child(5),
+#marks-entering-data td.marks-actions {
+  white-space: nowrap;
+}
+
+.score.blue {
+  border-color: #afe1ca;
+}
+
+.score.green {
+  border-color: #98ddbd;
+}
+
+/* PERCENT & GRADE */
+.percent {
+  color: #6ac198;
+  font-weight: 600;
+}
+
+.grade {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.grade.f {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+
+/* =====================================
+   MARKS ENTRY - LAPTOP & DESKTOP
+   Below 900px the cards and the table are restyled further down as a
+   stacked card list, so everything here is kept above that breakpoint.
+   Selectors stay under .marks-container / .selected-subject-container
+   because table, th and td are bare element rules shared with the
+   attendance and report screens.
+===================================== */
+@media (min-width: 901px) {
+
+  /* class, subject and the button sit on one row: the two selects share
+     the space evenly and the button keeps its natural width, so it no
+     longer floats against a 30% card */
+  .selected-subject-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1.25rem;
+    max-width: 1100px;
+  }
+
+  .selected-subject-container .selected-card {
+    width: 100%;
+    padding: .9rem 1rem 1rem;
+  }
+
+  /* the card had no vertical padding, so the label sat on its own edge */
+  .selected-subject-container .selected-card .class-text p {
+    margin-bottom: .55rem;
+  }
+
+  .selected-subject-container .form-group {
+    margin-bottom: 0;
+  }
+
+  .selected-subject-container .load-students-data {
+    padding: .8rem 1.6rem;
+    white-space: nowrap;
+  }
+}
+
+
+/* The stacked card layout ends at 768px, so the real table picks up from
+   769px. Below that the row is meant to break onto separate lines; above
+   it every cell stays on one line. */
+@media (min-width: 769px) {
+
+  .marks-container {
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .marks-container .card-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* was hardcoded white, which ignored the dark theme */
+  .marks-container .table-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding-bottom: 0;
+  }
+
+  .marks-container table {
+    min-width: 900px;
+  }
+
+  .marks-container thead {
+    background: var(--bg);
+  }
+
+  .marks-container th {
+    padding: 12px 16px;
+    color: var(--bold-p);
+    letter-spacing: .03em;
+    white-space: nowrap;
+  }
+
+  .marks-container td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--bold-h3);
+  }
+
+  .marks-container tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .marks-container tbody tr:hover td {
+    background: var(--bg);
+  }
+
+  /* roll number and the score columns are fixed, so the name column
+     absorbs the rest of the width instead of every column stretching */
+  .marks-container th:first-child,
+  .marks-container td:first-child {
+    width: 90px;
+  }
+
+  .marks-container th:nth-child(3),
+  .marks-container th:nth-child(4),
+  .marks-container th:nth-child(5),
+  .marks-container td:nth-child(3),
+  .marks-container td:nth-child(4),
+  .marks-container td:nth-child(5) {
+    width: 150px;
+  }
+
+  .marks-container td.student {
+    font-weight: 500;
+  }
+
+  .marks-container td:nth-child(5) {
+    white-space: nowrap;
+  }
+
+  .marks-container .score-field {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    white-space: nowrap;
+  }
+
+  .marks-container .score {
+    width: 80px;
+    padding: 8px 6px;
+    border-color: var(--border);
+    background: var(--surface);
+    color: var(--bold-h3);
+  }
+
+  .marks-container .score:focus {
+    outline: none;
+    border-color: var(--green-500);
+  }
+
+  .marks-container td.marks-actions {
+    width: 200px;
+    white-space: nowrap;
+  }
+
+  .marks-container td.marks-actions button {
+    white-space: nowrap;
+  }
+
+  .marks-container td.marks-actions button + button {
+    margin-left: .5rem;
+  }
+}
+
+
+/* Attendance-marking */
+.Attendance-marking{
+  display: none;
+}
+.form-group{
+    width: 100%;
+    margin-bottom: .3rem;
+    position: relative;
+}
+.form-group label{
+    color: var(--bold-h3);
+    margin-bottom: .8rem;
+    font-size: .8rem;
+}
+.form-input{
+    width: 100%;
+    padding: .7rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: var(--border-sm);
+}
+.date-container{
+  background: rgb(253, 253, 253);
+  padding: .5rem;
+  border-radius: 10px;
+  border: 1px solid lightgray;
+  margin-block: 1rem;
+}
+.selected-date{
+  margin-top: .5rem;
+  padding: .3rem 1rem;
+  background: #eef7f3;
+  border: 1px solid #a9ddc5;
+  color: #358c63;
+   border-radius: 5px;
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+}
+/* .small-padding{
+  padding: 0.5rem 1rem;
+} */
+.date-p-s{
+  color: var(--bold-h3);
+  font-size: .8rem;
+}
+.attend-container{
+  display: flex;
+  flex-wrap: wrap;
+  /* align-items: flex-start; */
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+.flex-p{
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .5rem;
+}
+.mark-attendance-btn{
+  padding: .7rem 1.5rem;
+  background: #32855e;
+  color: white;
+  font-weight: 550;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.mark-attendance-btn:hover{
+  background: #348861;
+}
+.shows-attendance-list{
+  margin-top: 1rem;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: .5rem;
+  display: block;
+}
+.shows-headers{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .5rem;
+}
+.flex-right button{
+  display: flex;
+  align-items: center;
+  padding: .7rem 1.5rem;
+  border: 1px solid lightgreen;
+  border-bottom: 3px solid lightgreen;
+  background: rgb(211, 241, 227);
+  border-radius: 5px;
+  color: rgb(34, 101, 70);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.flex-right button i{
+  margin-right: 5px;
+}
+.flex-right button:hover{
+   background: rgb(185, 232, 210);
+}
+.shows-attendance-status{
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.attend-status-card{
+  width: 30%;
+  padding: .3rem 2rem;
+}
+.attend-status-card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-p-card p{
+  font-size: .7rem;
+}
+.check-icon{
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.presents{
+   border: 1px solid lightgreen;
+  background: rgb(228, 246, 238);
+  border-radius: 5px;
+  color: rgb(39, 118, 81);
+}
+.pre{
+  background-color: rgb(50, 151, 104);
+  display: flex;
+  border-radius: 50%;
+}
+.check-icon i{
+  color: white;
+}
+.absents{
+    border: 1px solid rgb(255, 80, 80);
+  background: rgb(250, 224, 224);
+  border-radius: 5px;
+  color: rgb(253, 6, 6);
+}
+.abs{
+  background: rgb(253, 6, 6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.days{
+  border: 1px solid rgb(229, 166, 106);
+  background: rgb(243, 216, 190);
+  border-radius: 5px;
+  color: rgb(217, 127, 40);
+}
+.day{
+  border-radius: 50%;
+  background: rgb(223, 145, 71);
+}
+
+.mark-list-attendance{
+ margin-block: 1.5rem;
+ width: 100%;
+ background: white;
+}
+.mob-title{
+  margin-right: .5rem;
+  display: none;
+}
+
+.btn-save-remarks{
+  background: var(--primary-btn);
+  color: var(--btn-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  padding: .5rem 1rem;
+  border: 0;
+  font-family: poppins;
+  display: block;
+  margin-left: auto;
+}
+
+
+/* inline-flex-buttons */
+.inline-flex-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.inline-flex-buttons select{
+  padding: .5rem;
+ width: 100%;
+  border: 1px solid rgb(70, 185, 131);
+  border-radius: .5rem;
+  outline: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.356);
+ 
+}
+
+.student-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e4ece8;
+}
+
+.name {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.present {
+  background: #e3f6ed;
+  color: #1f5c40;
+  padding: 7px 5px;
+  border: 0;
+  border-radius: 5px;
+  font-size: .8rem;
+  cursor: pointer;
+}
+.present i, .absent i{
+  margin-right: 3px;
+}
+.absent {
+  background: #fee2e2;
+  color: #991b1b;
+    padding: 7px 5px;
+  border: 0;
+  border-radius: 5px;
+   cursor: pointer;
+}
+.save-all{
+  display: block;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  /* padding: 20px 25px;
+  background-color: orange;
+  font-size: 1.8rem; */
+}
+
+.review-attendance{
+  display: none;
+}
+.class-subject{
+  display: none;
+}
+.flex-class-btns{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-block: 1rem;
+  gap: .2rem;
+  padding: 5px 2px;
+  border-bottom: var(--border-sm);
+}
+.flex-class-btns button{
+  padding: .7rem 1.5rem;
+  border: 0;
+  font-size: 1rem;
+  background: var(--primary-btn);
+  color: white;
+  border-radius: 5px;
+}
+
+.save-all{
+  font-family: poppins;
+  padding: 10px 24px;
+  font-size: .8rem;
+}
+
+/* assigned-container style for dashboard */
+.assigned-container{
+  margin-block: .8rem;
+  background: var(--main-container);
+  border-radius: 10px;
+  padding: .4rem;
+}
+.assigned-container h3{
+  color: var(--bold-h3);
+  margin-block: .4rem;
+}
+.assign-card-flex{
+  /* width: 100%; */
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  margin-top: .5rem;
+  /* background-color: orange; */
+
+}
+.assign-card{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff;
+  width: 300px;
+  border-radius: 5px;
+  padding: .7rem;
+  border: .5px solid var(--assign-card-border);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.144);
+  /* color: orange; */
+  margin-top: .8rem;
+}
+.assign-card h4{
+  color: var(--bold-h3);
+  margin-bottom: .5rem;
+}
+.bold-p-assign{
+  color: var(--bold-p);
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  font-size: .8rem;
+}
+
+.class-name{
+  display: none;
+}
+
+.reportsCardDash{
+  display: none;
+}
+
+.class-card{
+  display: block;
+  padding: 1rem 1.5rem;
+  background: orange;
+}
+
+.assigned-card{
+  display: flex;
+  /* flex-wrap: wrap; */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.class-select-box{
+ width: 400px;
+    background: var(--selected-card);
+  padding: .5rem .7rem;
+  border-radius: 10px;
+}
+
+.btn-class-show{
+  display: block;
+  margin-left: auto;
+  margin-top: .8rem;
+  padding: .5rem 1.2rem;
+  background: var(--primary-btn);
+  border: none;
+  font-family: poppins;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-class-show:hover{
+  background: var(--btn-add-bg);
+}
+
+.search-card{
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  background: var(--status-card);
+    padding: .5rem .7rem;
+  border-radius: 10px;
+}
+
+.search-card label{
+  font-size: var(--bold-p);
+  margin-bottom: .5rem;
+  color: var(--bold-p);
+}
+.search-card input{
+  width: 100%;
+  padding: .7rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: 0;
+  font-size: 16px;
+}
+
+.search-card input:focus{
+  border: 1px solid var(--active-person);
+}
+
+
+/* student-names-wraper */
+.student-names-wrapper{
+  display: none;
+  margin-top: .5rem;
+  background: var(--intro-dash);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1rem 1.2rem 1.4rem;
+}
+
+.student-names-wrapper > .bold-h2{
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--bold-h3);
+  margin-bottom: .8rem;
+}
+
+/* header: class name + count badge */
+.student-list-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
+  padding-bottom: .8rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.student-list-header h4{
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bold-h3);
+}
+
+.student-count-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--primary-btn);
+  background: var(--selected-card);
+  padding: .3rem .7rem;
+  border-radius: 999px;
+}
+
+/* grid of student names */
+.student-name-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .6rem;
+}
+
+.student-name-item{
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .55rem .7rem;
+  background: var(--main-container);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: var(--transition);
+}
+
+.student-name-item:hover{
+  border-color: var(--primary-btn);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.student-index{
+  flex-shrink: 0;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--bold-p);
+  min-width: 1.2rem;
+  text-align: right;
+}
+
+.student-avatar{
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--selected-card);
+  color: var(--primary-btn);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.student-fullname{
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--bold-h3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-list-empty{
+  color: var(--bold-p);
+  font-size: .9rem;
+  padding: .5rem 0;
+}
+
+
+/* load-students-data */
+.load-students-data{
+  padding: .5rem 1.3rem;
+  border: var(--border-all);
+  border-radius: var(--border-radius);
+  background: var(--primary-btn);
+  color: var(--btn-color);
+  font-family: poppins;
+  cursor: pointer;
+  transition: var(--transition);
+  /* margin-top: 1rem; */
+  /* display: flex;
+  margin-inline: auto; */
+}
+
+.load-students-data:hover{
+  opacity: 90%;
+}
+
+/* success messages / error messages */
+.success-alert{
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: .5rem;
+  background-color: rgb(221, 244, 233);
+  color: green;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  z-index: 5;
+  transition: var(--transition);
+}
+.success-alert-pop{
+  top: 1%;
+}
+
+
+
+
+/* change password */
+.password-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(10, 10, 10, 0.452);
+  z-index: 5;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: all .3s ease-in-out;
+}
+
+.password-wrapper{
+  background: white;
+  width: min(350px, 90%);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.password-wrapper h3{
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.form-change-password{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-change-password label{
+  margin-bottom: .3rem;
+  font-size: .9rem;
+}
+
+.form-change-password input{
+  padding: .5rem;
+  margin-bottom: .5rem;
+  border:  1px solid #ccc;
+  outline: 0;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: var(--transition);
+}
+
+.form-change-password input:focus{
+  border:  1px solid var(--active-person);
+}
+
+.btn-change-password{
+  padding: .5rem;
+  border: 0;
+  background: var(--primary-btn);
+  color: white;
+  border-radius: 5px;
+  font-size: .9rem;
+  font-weight: 600;
+  font-family: poppins;
+  margin-top: 1rem;
+}
+
+.close-password-overlay{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  transform: translateX(-10px);
+  color: rgb(37, 37, 37);
+  padding: 3px 6px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.close-password-overlay:hover{
+  color: rgb(248, 8, 8);
+}
+
+/* logout-overlay */
+.logout-overlay{
+  display: none;
+}
+
+.logout-box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid rgb(245, 67, 67);
+  padding: 2rem 1rem;
+}
+
+.logout-box img{
+  width: 40px;
+  margin-bottom: 1.5rem;
+}
+
+.logout-box p{
+  text-align: center;
+  font-size: .9rem;
+  width: 250px;
+  margin-bottom: 1.5rem;
+}
+
+.flex-log-out{
+  display: flex;
+  gap: 1rem;
+}
+.flex-log-out button{
+  padding: var(--btn-padding);
+  border: var(--btn-border);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--btn-family);
+}
+
+.btn-no{
+  color: rgb(253, 32, 32);
+  background: rgb(255, 233, 233);
+}
+
+.btn-yes{
+  background: var(--primary-btn);
+  color: white;
+}
+.btn-yes:hover{
+  background: var(--btn-add-bg);
+}
+
+.score-dash{
+  display: none;
+}
+
+.score-sheet-subject{
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  gap: .8rem;
+    /* border: 1px solid var(--border-color); */
+    margin-block: 1rem;
+    padding: .5rem;
+    border-radius: var(--border-radius);
+}
+
+.score-form-group{
+  width: 350px;
+  padding: .4rem;
+    background: var(--selected-card);
+    border-radius: var(--border-radius);
+}
+
+.view-score-sheet-btn{
+background: var(--primary-btn);
+color: var(--btn-color);
+font-family: var(--btn-family);
+border: var(--btn-border);
+border-radius: var(--border-radius);
+padding: var(--btn-padding);
+cursor: pointer;
+transition: var(--transition);
+}
+
+.view-score-sheet-btn:hover{
+  background: var(--btn-add-bg);
+}
+
+/* score-sheet-section-show for the content */
+.score-sheet-section-show{
+  padding-block: 1rem;
+  display: none;
+  /* background-color: orange; */
+}
+.sheet-section-header{
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-block: 1rem;
+  padding: .5rem 1rem;
+}
+.sheet-section-header h3{
+  color: var(--bold-h3);
+  font-size: 1.5rem;
+  margin-bottom: .5rem;
+}
+.sheet-section-header h4{
+  color: var(--h-text-color);
+  margin-bottom: .4rem;
+}
+.sheet-section-header h6{
+  color: var(--h-text-color);
+  font-size: .9rem;
+  margin-bottom: .2rem;
+}
+
+/* position pill + total (desktop + mobile) */
+.pos-pill{
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--selected-card);
+  color: var(--primary-btn);
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.col-total strong{
+  color: var(--bold-h3);
+  font-weight: 700;
+}
+
+
+/* notification-wrapper */
+.notification-wrapper{
+  position: fixed;
+  top: 4rem;
+  right: 1.2rem;
+  z-index: 6;
+  display: none;
+  flex-direction: column;
+  width: 320px;
+  max-width: calc(100% - 20px);
+  /* was a fixed 80vh, which left a tall empty box under one notice.
+     It now grows with its content and only scrolls when it has to */
+  max-height: min(440px, 72vh);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(27, 67, 50, 0.16), 0 2px 6px rgba(27, 67, 50, 0.08);
+  overflow: hidden;
+}
+
+.notification-wrapper.pop{
+  display: flex;
+  animation: notice-pop .18s ease-out;
+}
+
+@keyframes notice-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.notice-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background: var(--green-100);
+  border-bottom: 1px solid var(--border);
+}
+
+.notice-header h4{
+  font-family: var(--btn-family);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--green-900);
+}
+
+#close-notice-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--green-900);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: bold;
+  font-family: var(--btn-family);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+
+#close-notice-wrapper:hover{
+  color: #fff;
+  background: var(--danger);
+  transform: rotate(90deg);
+}
+
+/* the header stays put, this is what scrolls */
+.notice-body{
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.notice-body::-webkit-scrollbar{
+  width: 6px;
+}
+
+.notice-body::-webkit-scrollbar-thumb{
+  background: #cfdad3;
+  border-radius: 999px;
+}
+
+/* the term the admin set - the panel's headline, so it is the only
+   green block in here */
+.term-notice-card{
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--green-100);
+  border: 1px solid #c7e6d2;
+  border-left: 3px solid var(--green-700);
+}
+
+.term-notice-label{
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--green-700);
+}
+
+.term-notice-term{
+  margin-top: 2px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--green-900);
+}
+
+.term-notice-year{
+  margin-top: 2px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--green-700);
+}
+
+.term-notice-dates{
+  margin-top: 6px;
+  font-size: .78rem;
+  color: var(--text-muted);
+}
+
+/* nothing set yet: drop the green, it is not good news */
+.term-notice-card.is-unset{
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-left: 1px dashed var(--border);
+}
+
+.term-notice-card.is-unset .term-notice-label,
+.term-notice-card.is-unset .term-notice-year{
+  color: var(--text-muted);
+}
+
+.term-notice-card.is-unset .term-notice-term{
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.notice-list{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.notice-list:empty{
+  display: none;
+}
+
+.notice-list li{
+  position: relative;
+  padding: 10px 12px 10px 30px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #7a3c12;
+  background: #fdf3e7;
+  border: 1px solid #f3ddc2;
+  border-left: 3px solid var(--warning);
+  border-radius: 8px;
+}
+
+.notice-list li::before{
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 15px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--warning);
+}
+
+/* neutral notes are not warnings */
+.notice-list li.notice-info{
+  padding-left: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+}
+
+.notice-list li.notice-info::before{
+  display: none;
+}
+
+@media (max-width: 700px){
+  .notification-wrapper{
+    top: 4rem;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}
+
+
+/* ACTIVE BUTTON STATES */
+.active-present {
+  background-color: #2e8b60;
+  color: white;
+}
+
+.active-absent {
+  background-color: #dc2626;
+  color: white;
+}
+
+/* DISABLED SAVE BUTTON */
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+
+/* styel for feedback */
+.form-feedback {
+position: absolute;
+top: 5%;
+left: 50%;
+transform: translateX(-50%);
+  display: none;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 12px 0;
+  z-index: 10;
+  transition: var(--transition);
+}
+
+.form-feedback.show-message {
+  display: block;
+}
+
+.form-feedback.success {
+  background: #ecf9f3;
+  color: #2d7855;
+  border: 1px solid #aad5c1;
+}
+
+.form-feedback.error {
+  background: #ffebee;
+  color: #c92a2a;
+  border: 1px solid #ff8787;
+}
+
+.attendance-card-status{
+  background-color: orange;
+}
+
+
+/* data display side style */
+.edit-btn, .delete-btn, .view-btn{
+    padding: .6rem .7rem;
+    border-radius: .3rem;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+}
+
+.edit-btn:hover{
+ background: #905319;
+}
+.delete-btn:hover{
+    background: rgb(168, 2, 2);
+}
+
+.view-btn{
+    background: #348861;
+}
+
+.view-btn:hover{
+    background: #69c69b;
+}
+
+.edit-btn{
+    background: var(--pending-btn-span);
+}
+
+.delete-btn{
+    background: red;
+}
+
+
+
+/* report card */
+.teacher-report-wrapper {
+  background: var(--intro-dash);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  margin-top: 20px;
+}
+
+/* branded header banner */
+.teacher-report-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 22px 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #42ae7c 0%, #21583e 100%);
+  box-shadow: 0 8px 20px rgba(66, 174, 124, 0.25);
+}
+
+.teacher-report-title-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.report-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.teacher-report-title-box h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.report-subtitle {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.teacher-report-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.report-meta-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 90px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.report-meta-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.report-meta-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.teacher-report-actions button {
+  border: none;
+  background: #16221c;
+  color: #fff;
+  padding: 11px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.teacher-report-actions button:hover {
+  opacity: 0.92;
+}
+
+.teacher-report-table-wrap {
+  /* background-color: orange; */
+  color: black;
+  overflow-x: auto;
+}
+
+#teacher-report-table-body{
+  width: 100%;
+  /* background-color: orange; */
+}
+
+.teacher-report-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 950px;
+}
+
+.teacher-report-table thead th {
+  background: #f6f9f7;
+  color: #394f45;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e4ece8;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.teacher-report-table tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f0f5f3;
+  text-align: center;
+  vertical-align: middle;
+  background: #fff;
+}
+
+.teacher-report-table tbody tr:hover td {
+  background: #fafafa;
+}
+
+.teacher-report-table .student-name-col,
+.teacher-report-table .student-name-cell {
+  text-align: left;
+  min-width: 220px;
+}
+
+.teacher-report-table .serial-col {
+  min-width: 60px;
+}
+
+.teacher-report-table .overall-col,
+.teacher-report-table .position-col {
+  font-weight: 700;
+}
+
+.subject-score-badge {
+  display: inline-flex;
+  min-width: 44px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #24322b;
+  background: #f3faf7;
+}
+
+.subject-score-empty {
+  display: inline-flex;
+  min-width: 44px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #98b4a7;
+  background: #f3f7f5;
+}
+
+.rank-badge {
+  display: inline-flex;
+  min-width: 46px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f3f7f5;
+  font-weight: 700;
+  color: #394f45;
+}
+
+.remark-btn {
+  border: none;
+  background: #32855e;
+  color: white;
+  padding: 9px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.remark-btn:hover {
+  background: #47ae7e;
+}
+
+.teacher-report-empty {
+  text-align: center;
+  padding: 30px;
+  color: #648b79;
+  font-weight: 500;
+}
+
+/* =====================================
+   PER-STUDENT TERMINAL REPORT CARDS
+===================================== */
+.teacher-report-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: var(--text);
+}
+
+.student-report-card {
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--color);
+  padding: 1rem 1.1rem;
+}
+
+.student-report-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: .85rem;
+  margin-bottom: .85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.student-report-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--green-900);
+  margin-bottom: .4rem;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.student-report-summary p,
+.student-report-remark p {
+  font-size: .88rem;
+  margin-bottom: .25rem;
+}
+
+.student-report-remark {
+  min-width: 220px;
+  max-width: 340px;
+}
+
+.student-report-remark-text {
+  background: var(--green-100);
+  border-left: 3px solid var(--green-500);
+  border-radius: 4px;
+  padding: .4rem .6rem;
+  margin-bottom: .5rem !important;
+  word-break: break-word;
+}
+
+.student-report-remark-own {
+  color: var(--text-muted);
+  margin-bottom: .6rem !important;
+  word-break: break-word;
+}
+
+.student-report-table-wrap {
+  overflow-x: auto;
+}
+
+.student-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+
+.student-report-table th {
+  background: var(--green-100);
+  color: var(--green-900);
+  font-size: .78rem;
+  font-weight: 700;
+  text-align: left;
+  padding: .5rem .6rem;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.student-report-table td {
+  font-size: .85rem;
+  padding: .45rem .6rem;
+  border: 1px solid var(--border);
+}
+
+.student-report-table tbody tr:nth-child(even) {
+  background: #f6f9f7;
+}
+
+/* Under 900px every table on this page is restacked into labelled cards
+   by the shared rules in that breakpoint. The subject table opts out of
+   that: seven columns of marks read better scrolled sideways than as
+   seven stacked cards per subject, so the layout is restored here and
+   the wrap scrolls instead. */
+@media (max-width: 900px) {
+  .student-report-table {
+    display: table;
+    min-width: 560px;
+  }
+
+  .student-report-table thead {
+    display: table-header-group;
+  }
+
+  .student-report-table tbody {
+    display: table-row-group;
+  }
+
+  .student-report-table tr {
+    display: table-row;
+  }
+
+  .student-report-table th,
+  .student-report-table td {
+    display: table-cell;
+    white-space: nowrap;
+  }
+
+  /* the shared block turns every row into a padded card and prints the
+     column name before each cell - neither belongs on a real table */
+  .student-report-table tbody tr {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: none;
+  }
+
+  .student-report-table tbody tr:nth-child(even) {
+    background: #f6f9f7;
+  }
+
+  .student-report-table td::before {
+    content: none;
+  }
+
+  .student-report-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    /* room for the scrollbar so it does not sit on the last row */
+    padding-bottom: .4rem;
+  }
+
+  /* the subject name stays in view while the marks scroll past it.
+     border-collapse drops the border on a sticky cell, so the right
+     edge is drawn with a shadow instead */
+  .student-report-table th:first-child,
+  .student-report-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color);
+    box-shadow: 1px 0 0 var(--border);
+  }
+
+  .student-report-table th:first-child {
+    background: var(--green-100);
+  }
+
+  .student-report-table tbody tr:nth-child(even) td:first-child {
+    background: #f6f9f7;
+  }
+}
+
+@media (max-width: 700px) {
+  .student-report-head {
+    flex-direction: column;
+    gap: .9rem;
+  }
+
+  .student-report-remark {
+    max-width: 100%;
+  }
+
+  .student-report-card {
+    padding: .9rem .7rem;
+  }
+
+  /* tighter cells so fewer columns sit off screen to begin with */
+  .student-report-table {
+    min-width: 520px;
+  }
+
+  .student-report-table th,
+  .student-report-table td {
+    font-size: .75rem;
+    padding: .4rem .45rem;
+  }
+}
+
+/* Modal */
+.remark-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 7, 7, 0.55);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.remark-modal-overlay.active {
+  display: flex;
+  animation: remark-overlay-in 0.2s ease;
+}
+
+@keyframes remark-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.remark-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--intro-dash);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+  animation: remark-modal-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes remark-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.remark-modal-header,
+.remark-modal-footer {
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.remark-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.remark-modal-footer {
+  border-top: 1px solid var(--border-color);
+  background: var(--intro-dash);
+}
+
+.remark-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bold-h3);
+}
+
+.remark-modal-header button {
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--bold-p);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.remark-modal-header button:hover {
+  background: var(--main-container);
+  color: var(--bold-h3);
+}
+
+.remark-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* student info summary */
+.remark-student-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 18px;
+  background: var(--main-container);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.table-result-box{
+width: 100%;
+background-color: red;
+}
+
+.remark-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.remark-info-item:first-child {
+  grid-column: 1 / -1;
+}
+
+
+
+.remark-info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--bold-p);
+  font-weight: 600;
+}
+
+.remark-info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--bold-h3);
+}
+
+/* select grid */
+.remark-select-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.remark-select-grid .form-group {
+  margin-bottom: 0;
+}
+
+/* same height as the promotion select sharing the grid */
+.remark-select-grid .form-input {
+  padding: .5rem;
+}
+
+.remark-select-grid .form-input:focus {
+  box-shadow: 0 0 8px rgba(52, 136, 97, 0.1);
+  outline: 1px solid #47b984;
+}
+
+#class-teacher-remark-text {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  font-family: poppins, inherit;
+  background: var(--main-container);
+  color: var(--bold-h3);
+  resize: vertical;
+  outline: none;
+  transition: var(--transition);
+}
+
+#class-teacher-remark-text::placeholder {
+  color: var(--bold-p);
+}
+
+#class-teacher-remark-text:focus {
+  border-color: #47b984;
+  box-shadow: 0 0 0 3px rgba(71, 185, 132, 0.15);
+}
+
+.remark-modal-footer .btn-save-remarks {
+  padding: .7rem 1.4rem;
+  font-weight: 600;
+}
+
+@media (max-width: 540px) {
+  .remark-select-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* PRINT */
+@media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .teacher-report-wrapper,
+  .teacher-report-wrapper * {
+    visibility: visible;
+  }
+
+  .teacher-report-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    
+  }
+
+  .teacher-report-actions,
+  .remark-btn,
+  .remark-modal-overlay {
+    display: none !important;
+  }
+
+  /* flatten the coloured banner for clean printing */
+  .teacher-report-top {
+    background: none !important;
+    box-shadow: none;
+    padding: 0 0 12px;
+    border-bottom: 1px solid #cfddd6;
+    border-radius: 0;
+  }
+
+  .report-icon {
+    display: none;
+  }
+
+  .teacher-report-title-box h2,
+  .report-subtitle,
+  .report-meta-label,
+  .report-meta-value {
+    color: #16221c !important;
+  }
+
+  .report-meta-chip {
+    background: none !important;
+    border: 1px solid #cfddd6;
+  }
+
+  .teacher-report-table {
+    min-width: 100%;
+    font-size: 11px;
+  }
+
+  .teacher-report-table thead th,
+  .teacher-report-table tbody td {
+    padding: 6px;
+    border: 1px solid #cfddd6;
+  }
+
+  .teacher-report-table thead th {
+    background: #f3f7f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .subject-score-badge,
+  .subject-score-empty,
+  .rank-badge {
+    border: 1px solid #cfddd6;
+    background: #fff !important;
+    color: #16221c !important;
+    min-width: auto;
+    height: auto;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  /* on paper there is nothing to scroll: the subject table prints at the
+     page width instead of being clipped by its scroll box */
+  .student-report-table-wrap {
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .student-report-table {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .student-report-table th,
+  .student-report-table td {
+    position: static;
+    white-space: normal;
+    box-shadow: none;
+  }
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 900px) {
+
+
+  /* report banner stacks on mobile */
+  .teacher-report-top {
+    padding: 18px;
+  }
+
+  .teacher-report-meta {
+    width: 100%;
+  }
+
+  .report-meta-chip {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Header stack */
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .save-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Table becomes card layout */
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    background: #f6f9f7;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  td {
+    border: none;
+    padding: 3px 0;
+  }
+
+  /* Label style using pseudo-elements */
+  td::before {
+    content: attr(data-label);
+    display: flex;
+    font-size: 12px;
+    font-weight: 600;
+    color: #648b79;
+    /* margin-bottom: 15px; */
+      /* background-color: red; */
+  }
+
+
+  td input.score {
+    width: 100%;
+    max-width: 80%;
+      /* background-color: red; */
+      border: 1px solid #ccc;
+  }
+
+  .student {
+    gap: 15px;
+    font-weight: 600;
+    padding: .5rem;
+  }
+
+  .roll {
+    font-size: 16px;
+    color: #070707;
+    display:none;
+    align-items: center;
+  }
+
+  .percent {
+    font-size: 15px;
+  }
+
+  .grade {
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .sidebar-wrapper{
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0%;
+    transform: translateX(-100%);
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(154, 155, 156, 0.342);
+    z-index: 3;
+    transition: var(--transition);
+  }
+  .show-sm-menu{
+       transform: translateX(0%);
+  }
+
+  .CRIP-logo img{
+    margin-right: .8rem;
+  }
+
+  .dashboard-card-header{
+    padding: 12px 1rem;  
+  }
+  .icon-menu{
+    display: block;
+    margin-right: .2rem;
+  }
+
+  .dash-text{
+    font-size: 1rem;
+  }
+
+  .active-person{
+    /* background-color: orange; */
+    z-index: 10;
+    display: flex;
+  }
+
+  .logout{
+    padding: 10px 10px;
+  }
+  .logout i{
+    display: none;
+  }
+
+  .show-all-content{
+  width: 100%;
+  height: 100%;
+  background-color: #ebf1ee;
+  padding: .5rem 0rem;
+  margin-bottom: .5rem;
+}
+
+/* dashboard overview container */
+.status-container{
+  gap: .5rem;
+   /* background-color: #68c69a; */
+   padding: .2rem;
+   align-items: center;
+   justify-content: center;
+}
+
+.status-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  width: 40%;
+  gap: .5rem;
+  border: 1px solid rgb(169, 220, 196);
+  border-radius: 5px;
+  flex: 1;
+  /* color: var(--); */
+ 
+}
+.status-card:nth-child(3){
+  flex-direction: row;
+   justify-content: left;
+   gap: 2rem;
+}
+.hat{
+  margin-right: 5px;
+}
+.flex-class{
+  display: flex;
+  align-items: center;
+  gap: .1rem;
+  margin-bottom: 1rem;
+}
+/* .hat{
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: #daede4;
+  border-radius: 5px;
+} */
+
+.selected-card{
+  width: 100%;
+  padding: 8px 7px;
+  /* background: orange; */
+}
+
+.selected-subject-container, .attend-container{
+  gap: .2rem;
+}
+.bold-h3{
+  font-size: 1.5rem;
+}
+.bold-p{
+  font-size: .8rem;
+  margin-bottom: .8rem;
+}
+
+.shows-headers{
+  margin-bottom: .8rem;
+}
+.flex-right button{
+   padding: .2rem .5rem;
+}
+.flex-right button i{
+  margin-right: 2px;
+}
+
+.shows-attendance-status{
+  gap: .4rem;
+}
+.attend-status-card{
+  width: 35%;
+  padding: .3rem .5rem;
+}
+.check-icon{
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.class-text h3{
+  font-size: .8rem;
+  margin-bottom: .2rem;
+}
+
+/* .mob-title */
+.mob-title{
+  display: inline-block;
+  color: rgb(70, 185, 131);
+}
+.name {
+  flex: 1;
+  margin-left: 0px;
+}
+
+.save-btn{
+  font-family: poppins;
+}
+
+.score-sheet-subject{
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+
+.score-form-group{
+  width: 100%;
+}
+.view-score-sheet-btn{
+background: var(--primary-btn);
+color: white;
+font-family: poppins;
+border: 0;
+border-radius: 5px;
+padding: .9rem .7rem;
+display: block;
+margin-top: .5rem;
+margin-left: auto;
+cursor: pointer;
+transition: var(--transition);
+}
+
+.view-score-sheet-btn:hover{
+  background: var(--btn-add-bg);
+}
+
+/* class list */
+.btn-class-show{
+  padding: .7rem .9rem;
+}
+.search-card{
+  display: none;
+}
+
+.assign-card-flex{
+  /* flex-wrap: wrap; */
+  flex-direction: column;
+  gap: 0px;
+  margin: 0;
+}
+
+.assign-card{
+  width: 100%;
+}
+
+.load-students-data{
+  width: 100%;
+  display: block;
+  margin-inline: auto;
+}
+
+.form-feedback {
+width: 300px;
+}
+
+.class-select-box{
+  width: 100%;
+}
+.btn-class-show{
+   width: 100%;
+   font-family: poppins;
+   padding: .7rem 1.2rem
+}
+
+.load-students-data{
+  padding: .7rem 1.2rem;
+  margin-top: .5rem;
+}
+
+
+.mark-attendance-btn{
+  width: 100%;
+  font-size: .9rem;
+  padding: .8rem 1.2rem;
+  margin-bottom: .8rem;
+}
+
+
+
+.report-table-terminal {
+    display: none; /* hide table */
+  }
+
+  .mobile-report-card {
+    display: block;
+    background: #f5f5f5;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+  }
+
+  .mobile-report-card h4 {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .mobile-report-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 4px 0;
+  }
+
+  .mobile-total {
+    font-weight: bold;
+    margin-top: 8px;
+  }
+
+  .report-table-terminal{
+    display: block;
+    width: 100%;
+    font-size: .8rem;
+    white-space: normal;
+  }
+
+
+}
+
+
+@media (max-width: 900px) {
+  #teacher-report-table-head {
+    display: none;
+  }
+
+  #teacher-report-table-body tr {
+    display: block;
+    background: var(--main-container);
+    border: 1px solid var(--border-color);
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  #teacher-report-table-body td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    color: var(--bold-h3);
+  }
+
+  #teacher-report-table-body td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--bold-p);
+    flex-shrink: 0;
+  }
+
+  #teacher-report-table-body td:last-child {
+    padding-top: 12px;
+    border-bottom: none;
+  }
+
+  #teacher-report-table-body td.teacher-report-empty {
+    justify-content: center;
+    text-align: center;
+    border-bottom: none;
+    color: var(--bold-p);
+  }
+
+  #teacher-report-table-body td.teacher-report-empty::before {
+    display: none;
+  }
+
+  .remark-btn {
+    width: auto;
+  }
+}
+
+/* MARKS ENTRY - MOBILE CARDS */
+@media (max-width: 768px) {
+  .marks-container {
+    padding: .6rem;
+  }
+
+  .marks-container .card-header h2 {
+    font-size: 1rem;
+  }
+
+  .marks-container .table-wrapper {
+    overflow-x: visible;
+    background: transparent;
+    padding-bottom: .5rem;
+  }
+
+  #marks-entering-head {
+    display: none;
+  }
+
+  #marks-entering-data tr {
+    display: block;
+    background: #f6f9f7;
+    border: 1px solid #e4ece8;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+
+  #marks-entering-data td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #f0f5f3;
+    text-align: left;
+  }
+
+  #marks-entering-data td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 12px;
+    color: #4a6659;
+    flex-shrink: 0;
+  }
+
+  #marks-entering-data td.student {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  /* keep the input and the "/ 50" together on the right */
+  .score-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #648b79;
+  }
+
+  #marks-entering-data .score {
+    width: 80px;
+    padding: 10px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  #marks-entering-data .score:disabled {
+    background: #f3f7f5;
+    color: #648b79;
+  }
+
+  #marks-entering-data td.marks-actions {
+    justify-content: stretch;
+    gap: 8px;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  #marks-entering-data td.marks-actions::before {
+    content: none;
+  }
+
+  #marks-entering-data td.marks-actions button {
+    flex: 1;
+    padding: .7rem .5rem;
+    font-size: .85rem;
+  }
+}
+
+/* SCORE SHEET - MOBILE CARDS */
+@media (max-width: 900px) {
+  .score-sheet-section-show {
+    padding-block: .5rem;
+  }
+
+  .report-meta-label{
+      font-size: 10px;
+  }
+
+  .report-meta-value {
+  font-size: 12px;
+  font-weight: 300;
+  color: #fff;
+}
+
+  .sheet-section-header {
+    border: 1px solid var(--border-color);
+    background: var(--main-container);
+    text-align: center;
+    padding: .9rem 1rem;
+  }
+
+  .sheet-section-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .score-sheet-section-show .mark-list-attendance {
+    margin-block: 1rem;
+    background: transparent;
+  }
+
+  /* each student becomes a card */
+  #score-sheet-table-body tr {
+    position: relative;
+    display: block;
+    background: var(--intro-dash);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  #score-sheet-table-body td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
+    color: var(--bold-h3);
+  }
+
+  #score-sheet-table-body td:last-child {
+    border-bottom: none;
+  }
+
+  #score-sheet-table-body td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--bold-p);
+    flex-shrink: 0;
+  }
+
+  /* student name = card header bar */
+  #score-sheet-table-body td.col-name {
+    display: block;
+    background: var(--main-container);
+    padding: .8rem .9rem;
+    padding-right: 3.2rem; /* room for S/N badge */
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bold-h3);
+  }
+
+  #score-sheet-table-body td.col-name::before {
+    display: none;
+  }
+
+  /* S/N shown as a badge on the header */
+  #score-sheet-table-body td.col-sn {
+    position: absolute;
+    top: .55rem;
+    right: .8rem;
+    padding: 2px 9px;
+    border: none;
+    border-radius: 999px;
+    background: var(--selected-card);
+    color: var(--primary-btn);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  #score-sheet-table-body td.col-sn::before {
+    content: "#";
+    color: var(--primary-btn);
+    margin: 0;
+  }
+
+  #score-sheet-table-body td.col-total strong {
+    font-size: 15px;
+  }
+
+  /* empty / no-data row */
+  #score-sheet-table-body tr td[colspan] {
+    display: block;
+    text-align: center;
+    color: var(--bold-p);
+    padding: 1rem;
+  }
+
+  #score-sheet-table-body tr td[colspan]::before {
+    display: none;
+  }
+}
+
+/* ATTENDANCE MARKING - MOBILE CARDS */
+@media (max-width: 900px) {
+  .shows-attendance-list {
+    padding: .75rem;
+    border: 1px solid var(--border-color);
+    background: var(--intro-dash);
+    border-radius: 12px;
+  }
+
+  .shows-headers {
+    align-items: flex-start;
+    gap: .5rem;
+    margin-bottom: .75rem;
+  }
+
+  .shows-attendance-status {
+    gap: .5rem;
+  }
+
+  .attend-status-card {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    padding: .5rem .6rem;
+    gap: .4rem;
+  }
+
+  .attend-status-card h4 {
+    font-size: 1.05rem;
+  }
+
+  .attend-status-card .check-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    font-size: .7rem;
+  }
+
+  /* the marking list itself */
+  #mark-list-attendance {
+    margin-block: 1rem 0;
+    background: transparent;
+  }
+
+  #students-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+  }
+
+  /* each student becomes a card: number + name on top, actions below */
+  #mark-list-attendance .student-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "roll name"
+      "actions actions";
+    align-items: center;
+    gap: .7rem;
+    padding: .75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--intro-dash);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  #mark-list-attendance .roll {
+    grid-area: roll;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--main-container);
+    color: var(--bold-p);
+    font-size: .75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  #mark-list-attendance .name {
+    grid-area: name;
+    margin-left: 0;
+    font-size: .95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--bold-h3);
+    word-break: break-word;
+  }
+
+  #mark-list-attendance .actions {
+    grid-area: actions;
+    display: flex;
+    gap: .5rem;
+  }
+
+  #mark-list-attendance .actions button {
+    flex: 1;
+    min-height: 44px;
+    padding: .6rem .5rem;
+    border-radius: 10px;
+    font-family: poppins;
+    font-size: .85rem;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  #mark-list-attendance .actions .active-present {
+    box-shadow: 0 0 0 2px rgba(46, 139, 96, .25);
+  }
+
+  #mark-list-attendance .actions .active-absent {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, .25);
+  }
+
+  /* save stays reachable while scrolling a long class list */
+  #mark-list-attendance .save-all {
+    position: sticky;
+    bottom: .5rem;
+    width: 100%;
+    margin-top: 1rem;
+    margin-left: 0;
+    min-height: 48px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+    z-index: 2;
+  }
+
+  /* ATTENDANCE VIEW TABLE - MOBILE CARDS */
+  #display-attendance-data-table tr {
+    display: block;
+    background: var(--intro-dash);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0;
+    margin-bottom: .6rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  #display-attendance-data-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .6rem .85rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: .85rem;
+    color: var(--bold-h3);
+  }
+
+  #display-attendance-data-table td:last-child {
+    border-bottom: none;
+  }
+
+  #display-attendance-data-table td::before {
+    content: attr(data-label);
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bold-p);
+    flex-shrink: 0;
+  }
+
+  /* student name sits on top as the card title */
+  #display-attendance-data-table td.col-student {
+    background: var(--main-container);
+    font-size: .95rem;
+    font-weight: 700;
+  }
+
+  #display-attendance-data-table td.col-student::before {
+    content: "#";
+    color: var(--primary-btn);
+  }
+
+  /* loading / empty / error rows */
+  #display-attendance-data-table tr td[colspan] {
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    color: var(--bold-p);
+  }
+
+  #display-attendance-data-table tr td[colspan]::before {
+    display: none;
+  }
+}
+
+/* =====================================
+   ATTENDANCE LOCKED
+
+   Marking is closed until the admin sets the term's total days, so the
+   button is disabled and this says why. Kept free of a display rule so
+   the hidden attribute alone controls it.
+===================================== */
+.mark-attendance-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mark-attendance-btn:disabled:hover {
+  background: #32855e;
+}
+
+.attendance-locked-notice {
+  margin-top: .6rem;
+  padding: .7rem .9rem;
+  border-radius: 10px;
+  background: #fdf3e6;
+  border: 1px solid #e67e22;
+  color: #a96a2c;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.attendance-locked-notice i {
+  margin-right: .3rem;
+}
+
+
+/* =========================
+   MY SIGNATURE OVERLAY
+
+   shares .password-overlay / .password-wrapper with the change password
+   and log out boxes, so it keeps their white card in both themes
+========================= */
+.signature-wrapper{
+  width: min(420px, 92%);
+  color: #1b241f;
+}
+
+.signature-hint{
+  font-size: .8rem;
+  color: #4d5a53;
+  margin-bottom: .8rem;
+  line-height: 1.4;
+}
+
+.signature-preview-box{
+  border: 1px dashed #b9c7c0;
+  border-radius: 8px;
+  background: #f7fbf9;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem;
+  margin-bottom: .9rem;
+}
+
+/* a signature is wide and short: fit it inside the box without stretching */
+.signature-preview-box img{
+  max-width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+}
+
+.signature-empty-text{
+  font-size: .85rem;
+  color: #7b8a83;
+}
+
+.signature-file-label{
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem .7rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.signature-file-label:hover{
+  background: #eef5f1;
+}
+
+/* the styled label is the control; the input itself stays out of the way */
+#signature-file-input{
+  display: none;
+}
+
+.signature-file-name{
+  font-size: .8rem;
+  color: #4d5a53;
+  margin-top: .4rem;
+  word-break: break-all;
+}
+
+.signature-buttons{
+  display: flex;
+  gap: .7rem;
+  align-items: center;
+}
+
+.signature-buttons .btn-change-password{
+  flex: 1;
+  cursor: pointer;
+}
+
+.btn-remove-signature{
+  margin-top: 1rem;
+  padding: .5rem .8rem;
+  border: 1px solid rgb(245, 67, 67);
+  background: white;
+  color: rgb(207, 43, 43);
+  border-radius: 5px;
+  font-size: .9rem;
+  font-weight: 600;
+  font-family: poppins;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-remove-signature:hover{
+  background: rgb(250, 224, 224);
+}
+
+@media (max-width: 768px){
+  .signature-wrapper{
+    width: 100%;
+  }
+
+  .signature-file-label,
+  .signature-buttons .btn-change-password,
+  .btn-remove-signature{
+    min-height: 44px;
+  }
+}
