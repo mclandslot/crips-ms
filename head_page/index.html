@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crips-ms</title>
+   <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="../data/confirmDialog.css">
+    <link rel="stylesheet" href="index.css">
+    <!-- installable app: manifest, home-screen icons, service worker -->
+    <meta name="theme-color" content="#1b4332">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CRIPS MS">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="../app-icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="../app-icons/apple-touch-icon.png">
+    <script src="../pwa.js"></script>
+</head>
+<body>
+<div class="dashboard-container">
+
+  <!-- SIDEBAR -->
+<div class="small-moble-overlay" id="small-moble-overlay">
+      <aside class="sidebar">
+    <div class="logo-box">
+        <img src="../CRIG-LOGO1.png" alt="school-log" width="30px">
+      <div class="right-info-te">
+        <h2>CRIPS-MS</h2>
+      <p>Head Teacher Portal</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="nav-links active" id="dashboard-overview-content"><a href="#dashboard"><i class="fa-solid fa-list"></i>Dashboard</a></li>
+        <li class="nav-links" id="students-data-content"><a href="#students"><i class="fa-solid fa-users"></i>Students</a></li>
+        <li class="nav-links" id="teachers-data-content"><a href="#teachers-data"><i class="fa-solid fa-users"></i>Staff</a></li>
+        <li class="nav-links" id="class-performance-content"><a href="#class-performance"><i class="fa-solid fa-star"></i>Class Performance</a></li>
+        <li class="nav-links" id="attendance-overview-content"><a href="#attendance-overview"><i class="fa-solid fa-business-time"></i>Attendance Reports</a></li>
+        <li class="nav-links" id="scores-sheet-section-content"><a href="#class-scored-data-section-dash"><i class="fa-solid fa-layer-group"></i>Score sheet</a></li>
+        <li class="nav-links" id="broad-sheet-data-content"><a href="#broad-sheet-data"><i class="fa-solid fa-layer-group"></i>Broadsheet</a></li>
+        <li class="nav-links" id="terminal-reports-content"><a href="#"><i class="fa-solid fa-layer-group"></i>Terminal Reports</a></li>
+        <!-- <li class="nav-links" id="report-approval-content"><a href="#"><i class="fa-solid fa-check"></i>Report Approval</a></li> -->
+      
+      
+      </ul>
+    </nav>
+
+   
+  </aside>
+</div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="top-nav-box">
+        <h2><i class="fa-solid fa-bars" id="show-moble-nav"></i>Hello!, Head Teacher</h2>
+        <div class="notice-area">
+            <div class="circle-span" id="accounts-btn"><i class="fa-solid fa-user"></i></div>
+            <div class="circle-span" id="show-notification"><i class="fa-solid fa-bell"></i></div>
+        </div>
+    </div>
+
+     <div class="account-box">
+        <div class="top-arrow-card">
+            <p><i class="fa-solid fa-sliders"></i>Account</p>
+        </div>
+
+        <div class="card-show-more">
+            <p id="profile-overlay"><i class="fa-solid fa-user"></i>Profile</p>
+            <p id="signature-body"><i class="fa-solid fa-signature"></i>My Signature</p>
+            <p id="password-body"><i class="fa-solid fa-lock"></i>Change Password</p>
+            <p id="show-sign-out"><i class="fa-solid fa-right-to-bracket"></i>Sign Out</p>
+            <p id="close-overlay"><i class="fa-solid fa-close"></i>Close</p>
+            <!-- <p></p> -->
+        </div>
+
+        <div class="profile">
+            <p>Name: <span id="head-teacher-name"></span></p>
+            <p>Email: <span id="head-teacher-email"></span></p>
+            <p>Role: <span id="head-teacher-role"></span></p>
+        </div>
+    </div>
+
+    <!-- TOP HEADER -->
+    <div class="section-box home-over-view" id="home-view">
+        <header class="dashboard-header">
+      <div>
+        <h1>Dashboard Overview</h1>
+        <p>Monitor school performance, attendance, and reports</p>
+      </div>
+
+      <div class="header-info">
+        <div>
+          <h4>Current Term</h4>
+          <p id="head-current-term"></p>
+        </div>
+        <div>
+          <h4>Academic Year</h4>
+          <p id="head-current-year"></p>
+        </div>
+      </div>
+    </header>
+
+    <!-- SUMMARY CARDS -->
+    <section id="dashboard-overview" class="summary-cards">
+      <div class="card">
+        <div class="card-icon icon-students"><i class="fa-solid fa-user-group"></i></div>
+        <div class="card-body">
+          <h3>Total Students</h3>
+          <p id="head-total-students">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-male"><i class="fa-solid fa-mars"></i></div>
+        <div class="card-body">
+          <h3>Total Male</h3>
+          <p id="male-total-students">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-female"><i class="fa-solid fa-venus"></i></div>
+        <div class="card-body">
+          <h3>Total Female</h3>
+          <p id="female-total-students">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-completed"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="card-body">
+          <h3>Completed Students</h3>
+          <p id="completed-total-students">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-teachers"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div class="card-body">
+          <h3>Total Teachers</h3>
+          <p id="head-total-teachers">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-classes"><i class="fa-solid fa-school"></i></div>
+        <div class="card-body">
+          <h3>Total Classes</h3>
+          <p id="head-total-classes">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-attendance"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="card-body">
+          <h3>Attendance Rate</h3>
+          <p id="head-attendance-rate">0%</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-reports"><i class="fa-solid fa-file-circle-check"></i></div>
+        <div class="card-body">
+          <h3>Reports Ready</h3>
+          <p id="head-reports-ready">0</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon icon-pending"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div class="card-body">
+          <h3>Pending Approval</h3>
+          <p id="head-pending-approval">0</p>
+        </div>
+      </div>
+
+
+    </section>
+
+    <!-- QUICK ACTIONS -->
+    <section class="quick-actions">
+      <h2>Classes Summary</h2>
+      <div class="actions-grid" id="actions-class-data">
+      
+      </div>
+    </section>
+    </div>
+
+    <!-- CLASS PERFORMANCE TABLE -->
+    <section id="class-performance" class="section-box class-performance">
+      <h2>Class Performance</h2>
+      <p id="head-class-performance-caption">Performance in percentage (%)</p>
+
+      <table class="student-details-table class-performance-table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Distinction<br><small>80 – 100</small></th>
+            <th>Above Average<br><small>70 – 79</small></th>
+            <th>Average<br><small>60 – 69</small></th>
+            <th>Just Below Average<br><small>50 – 59</small></th>
+            <th>Weak<br><small>Below 50</small></th>
+          </tr>
+        </thead>
+        <tbody id="head-class-performance-body">
+          <tr>
+            <td colspan="6">No class performance loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ATTENDANCE OVERVIEW -->
+    <section id="attendance-overview" class="section-box attendance-overview">
+      <h2>Attendance Overview</h2>
+      <p>View of class attendance</p>
+
+      <table class="student-details-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Class</th>
+            <th>Total Students</th>
+            <th>Total Present</th>
+            <th>Total Absent</th>
+            <th>Attendance %</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="head-attendance-body">
+          <tr>
+            <td colspan="7">No attendance data loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+
+
+   <section id="students-data" class="section-box students-data">
+      <h2>Student Information</h2>
+      <p>All students information</p>
+
+      <div class="filter-row">
+        <select id="view-class-info">
+          <option value="">Select Class</option>
+        </select>
+
+
+        <button id="view-students-btn" class="view-student-btn">View student</button>
+
+      </div>
+
+      <table class="student-details-table">
+        <thead>
+          <tr>
+                                <th>Admission No.</th>
+                                <th>Admission Date</th>
+                                <th>Full Name</th>
+                                <th>Date of Birth</th>
+                                <th>Gender</th>
+                                <th>Class</th>
+                                <th>Section</th>
+                                <th>Status</th>
+                                <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="student-details-tbody">
+          <tr>
+            <td colspan="9">No class student loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+
+       <section id="teachers-data" class="section-box teachers-datas">
+      <h2>Staff Information</h2>
+      <p>All staff employed</p>
+
+      <table class="student-details-table">
+        <thead>
+          <tr>
+                                  <th>#</th>
+                                <th>Full Name</th>
+                                <th>Gender</th>
+                                <th>Qualification</th>
+                                <th>Date Employed</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="teachers-details-tbody">
+          <tr>
+            <td colspan="8">No teacher loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+
+
+
+ <section id="class-scored-data-section-dash" class="section-box scores-section">
+      <h2>Score sheet</h2>
+      <p>View each class score-sheet</p>
+
+      <div class="filter-row">
+        <select id="head-marks-sheet-class" class="filter-inputs">
+          <option value="">Select Class</option>
+        </select>
+
+         <select id="head-marks-sheet-subject">
+          <option value="">Select subject</option>
+        </select>
+
+        <select id="head-marks-sheet-year">
+          <option value="">Select Academic Year</option>
+        </select>
+
+        <select id="head-marks-sheet-term">
+          <option value="">Select Term</option>
+        </select>
+
+        <div class="flex-buttons">
+        <button id="head-load-marks-sheet-btn">Load marks</button>
+      </div>
+
+      </div>
+
+      
+
+      <div id="head-marks-sheet-container">
+        <p>No marks score loaded.</p>
+      </div>
+    </section>
+
+
+
+       <!-- BROAD SHEET -->
+    <section id="broad-sheet-data" class="section-box broadsheet-section">
+      <h2>Broadsheet</h2>
+      <p>View each class broadsheet</p>
+
+      <div class="filter-row">
+        <select id="head-score-sheet-class">
+          <option value="">Select Class</option>
+        </select>
+
+          <select id="head-score-sheet-term">
+          <option value="">Select Term</option>
+        </select>
+
+      
+
+        <select id="head-score-sheet-year">
+          <option value="">Select Academic Year</option>
+        </select>
+
+      
+
+        <div class="flex-buttons">
+        <button id="head-load-score-sheet-btn">Load Broadsheet</button>
+      </div>
+
+      </div>
+
+      
+
+      <div id="head-score-sheet-container">
+        <p>No broadsheet loaded.</p>
+      </div>
+    </section>
+
+
+    <!-- REPORT APPROVAL -->
+    <section id="report-approval" class="section-box report-approval">
+      <h2>Report Approval</h2>
+      <table class="student-details-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Class</th>
+            <th>Academic Year</th>
+            <th>Term</th>
+            <th>Status</th>
+            <th>Approval</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="head-report-approval-body">
+          <tr>
+            <td colspan="7">No reports awaiting approval.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- TERMINAL REPORTS -->
+    <section id="terminal-reports-dash" class="section-box terminal-reports">
+      <h2>Terminal Reports</h2>
+      <p>View terminal reports</p>
+
+      <!-- same markup and ids as the admin page, so ../data/studentTerminal.js drives both -->
+      <div class="flex-class-student-card">
+        <div class="select-report-class">
+          <div class="form-group">
+            <label for="class-to-select-terminal-reports">Class<span class="compulsory-info-span">*</span></label>
+            <div class="form-select">
+              <select name="class" id="class-to-select-terminal-reports">
+                <option value="">Select class</option>
+              </select>
+              <div class="arrow-icon">
+                <i class="fa-solid fa-caret-down"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="select-report-class">
+          <div class="form-group">
+            <label for="term-to-select-terminal-reports">Term<span class="compulsory-info-span">*</span></label>
+            <div class="form-select">
+              <select name="term" id="term-to-select-terminal-reports">
+                <option value="">Select term</option>
+              </select>
+              <div class="arrow-icon">
+                <i class="fa-solid fa-caret-down"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="select-report-class">
+          <div class="form-group">
+            <label for="academic-year-to-select-terminal-reports">Academic year<span class="compulsory-info-span">*</span></label>
+            <div class="form-select">
+              <select name="academic-year" id="academic-year-to-select-terminal-reports">
+                <option value="">Select year</option>
+              </select>
+              <div class="arrow-icon">
+                <i class="fa-solid fa-caret-down"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-reports-btns">
+        <button class="basic-details viewbtn" id="generate-reports-cards-btn">Generate Reports</button>
+        <input type="search" placeholder="Search with name" class="report-card-search" id="student-to-select-terminal-reports">
+      </div>
+
+      <div class="report-card-wrapper">
+        <div class="show-class-name-print">
+          <div class="report-class-information">
+            <h4 id="class-choose-name-terminal-reports"></h4>
+            <p>Total students: <span id="total-students-in-class"></span></p>
+          </div>
+          <button class="basic-details" id="print-terminal-report-btn"><i class="fa-solid fa-print"></i>Print report cards</button>
+        </div>
+
+        <div id="all-terminal-reports-container" class="all-terminal-reports-container"></div>
+      </div>
+    </section>
+
+
+
+    <div class="alert-notification" id="alert-notification">
+      <div class="flex-row-alert">
+        <h4>Notification</h4>
+        <span class="span-notice-box" id="close-x-notice"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <ul id="head-alerts-list">
+        <li class="alert-empty">Checking.......</li>
+      </ul>
+    </div>
+
+   
+
+  </main>
+</div>
+
+
+<!-- student attendance records overlay -->
+<div class="records-attendance" id="records-attendance">
+  <div class="preview-attendance">
+    <span id="close-preview-attendance">&times;</span>
+    <h3>Attendance</h3>
+
+    <div class="class-choosen">
+      <p>Class:</p>
+      <p>Term:</p>
+    </div>
+
+    <table class="student-details-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Student Name</th>
+          <th>Presents</th>
+          <th>Absents</th>
+          <th>Total Days</th>
+        </tr>
+      </thead>
+      <tbody id="attendance-records-tbody">
+  <tr>
+    <td colspan="5">No records available</td>
+  </tr>
+</tbody>
+    </table>
+    
+  </div>
+</div>
+
+
+
+    <!-- students details show overlay -->
+    <div class="students-details-overlay" id="students-details-overlay">
+        <div class="details-wrapper">
+            <h4 class="details-h4">Student Details</h4>
+            <div class="student-name-card">
+                <div class="profile-box-img"></div>
+                <div class="right-name-box">
+                    <h4 class="name-h4-text" id="detail-full-name"></h4>
+                    <p class="details-class-p" id="detail-class"></p>
+                  
+                    <span class="active-status-text" id="detail-status"></span>
+                </div>
+            </div>
+
+            <div class="flex-detail-wrapper">
+                <div class="left-details-card">
+                    <p class="top-details-p"><i class="fa-solid fa-user"></i>Personal Information</p>
+
+                    <div class="group-details">
+                        <label for="">Admission number</label>
+                        <p id="detail-admission-number"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Full name</label>
+                       <p id="detail-fullname-persona"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Date of birth</label>
+                        <p id="detail-dob"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Gender</label>
+                        <p id="detail-gender"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Admission date</label>
+                        <p id="detail-admission-date"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Class</label>
+                       <p id="detail-class-personal"></p>
+                    </div>
+
+                       <div class="group-details">
+                        <label for="">Section</label>
+                           <p id="detail-section"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Status</label>
+                       <p id="detail-status-personal"></p>
+                    </div>
+                    
+                </div>
+
+                <div class="right-datails">
+                      <p class="top-details-p"><i class="fa-solid fa-users"></i>Parent/Guardian Information</p>
+
+                       <div class="group-details">
+                        <label for="">Full name</label>
+                        <p id="detail-parent-name"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Relationship</label>
+                        <p id="detail-relationship"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Phone</label>
+                        <p id="detail-phone"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="detail-address">Address</label>
+                        <p id="detail-address"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Staff or Non-Staff</label>
+                       <p id="detail-staff-type"></p>
+                    </div>
+                </div>
+            
+            </div>
+            <span class="close-student-details" id="close-student-details" onclick="closeOverlay()">&times;</span>
+            <!-- <button class="edit-details">Edit student</button> -->
+        </div>
+
+    </div>
+
+
+
+
+     <!-- teachers details show overlay -->
+    <div class="students-details-overlay" id="teachers-details-overlay">
+        <div class="details-wrapper">
+            <h4 class="details-h4">Teacher Details</h4>
+            <div class="student-name-card">
+                <div class="profile-box-img"></div>
+                <div class="right-name-box">
+                    <h4 class="name-h4-text" id="detail-techer-full-name"></h4>
+                   <p class="details-class-p" id="detail-role-teacher"></p>
+                    <span class="active-status-text" id="detail-teacher-status"></span>
+                </div>
+            </div>
+
+            <div class="flex-detail-wrapper">
+                <div class="left-details-card">
+                    <p class="top-details-p"><i class="fa-solid fa-user"></i>Personal Information</p>
+
+                     <div class="group-details">
+                        <label for="">Full name</label>
+                       <p id="detail-fullname-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Date of birth</label>
+                        <p id="detail-dob-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Gender</label>
+                        <p id="detail-gender-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Employed date</label>
+                        <p id="detail-employed-date"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Qualification</label>
+                       <p id="detail-qualification-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Status</label>
+                       <p id="detail-status-teacher"></p>
+                    </div>
+
+                      <div class="group-details">
+                        <label for="">Marital Status</label>
+                       <p id="detail-marital-status-teacher"></p>
+                    </div>
+                    
+                </div>
+
+                <div class="right-datails">
+                      <p class="top-details-p"><i class="fa-solid fa-users"></i>Contact Information</p>
+
+                       <div class="group-details">
+                        <label for="">Phone</label>
+                        <p id="detail-teacher-phone"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="">Email</label>
+                        <p id="detail-teacher-email"></p>
+                    </div>
+
+                     <div class="group-details">
+                        <label for="detail-address">Address</label>
+                        <p id="detail-address-teacher"></p>
+                    </div>
+
+                </div>
+            
+            </div>
+            <span class="close-student-details" id="close-teachers-details" onclick="closeOverlayTeacherDetails()">&times;</span>
+            <!-- <button class="edit-details">Edit student</button> -->
+        </div>
+
+    </div>
+
+
+
+
+              <!-- head teacher signature -->
+<div class="password-overlay" id="signature-overlay">
+  <div class="password-wrapper signature-wrapper">
+    <h3>My Signature</h3>
+
+    <p class="signature-hint">
+      Upload a clear scan or photo of your signature. It prints on every
+      student's terminal report. PNG with a transparent background works best.
+    </p>
+
+    <div class="signature-preview-box" id="signature-preview-box">
+      <p class="signature-empty-text" id="signature-empty-text">No signature uploaded yet.</p>
+      <img id="signature-preview-img" src="" alt="head teacher signature" style="display:none;">
+    </div>
+
+    <label for="signature-file-input" class="signature-file-label">
+      <i class="fa-solid fa-image"></i> Choose signature image
+    </label>
+    <input type="file" id="signature-file-input" accept="image/png, image/jpeg, image/webp">
+    <p class="signature-file-name" id="signature-file-name"></p>
+
+    <p id="signature-message" class="change-password-message"></p>
+
+    <div class="signature-buttons">
+      <button type="button" class="btn-change-password" id="save-signature-btn">
+        Save signature
+      </button>
+      <button type="button" class="btn-remove-signature" id="remove-signature-btn">
+        Remove
+      </button>
+    </div>
+
+    <span class="close-password-overlay" id="close-signature-overlay">&times;</span>
+  </div>
+</div>
+
+
+              <!-- change password -->
+<div class="password-overlay" id="password-overlay">
+  <div class="password-wrapper">
+    <h3>Change Password</h3>
+
+    <form id="change-password-form" class="form-change-password">
+      <div class="pass-reset-card">
+      <label for="current-password">Current password</label>
+      <input
+        type="password"
+        id="current-password"
+  
+        autocomplete="current-password"
+        required
+      >
+       <i class="fa-solid fa-eye" id="current-pass-input-confirm"></i>
+</div>
+      <div class="pass-reset-card">
+      <label for="new-password">New password</label>
+      <input
+        type="password"
+        id="new-password"
+   
+        autocomplete="new-password"
+        required
+      >
+       <i class="fa-solid fa-eye" id="new-pass-set"></i>
+      </div>
+   <div class="pass-reset-card">
+      <label for="confirm-password">Retype password</label>
+      <input
+        type="password"
+        id="confirm-password"
+    
+        autocomplete="new-password"
+        required
+      >
+       <i class="fa-solid fa-eye" id="new-pass-set-confirm"></i>
+</div>
+      <p id="change-password-message" class="change-password-message"></p>
+
+      <button type="submit" class="btn-change-password" id="btn-change-password">
+        Change password
+      </button>
+    </form>
+
+    <span class="close-password-overlay" id="close-password-overlay">&times;</span>
+  </div>
+</div>
+
+
+<!-- log out overlay -->
+               <div class="password-overlay logout-overlay" id="logout-overlay">
+                <div class="password-wrapper logout-box">
+                    <img src="icons/logout (1).png" alt="log-out png">
+                    <p>Are you sure to log out? you will be redirected to login page.</p>
+                    <div class="flex-log-out">
+                        <button class="btn-no" id="btn-no">No, Cancel</button>
+                        <button class="btn-yes" id="btn-yes-logout" onclick="logout()">Yes, Logout</button>
+                    </div>
+
+                </div>
+               </div>
+
+
+
+
+
+                 <!-- feedback messages -->
+    <div id="form-feedback" class="form-feedback"></div>
+
+
+<!-- <i class="fa-solid fa-print"></i>
+<i class="fa-solid fa-eye"></i>
+<i class="fa-solid fa-pen-to-square"></i>
+<i class="fa-solid fa-calendar"></i>
+<i class="fa-solid fa-xmark"></i>
+<i class="fa-solid fa-trash"></i>
+<i class="fa-solid fa-rotate-right"></i> 
+<i class="fa-solid fa-bars"></i>
+<i class="fa-solid fa-comment"></i>
+<i class="fa-solid fa-comment"></i>
+
+
+-->
+    
+<!-- CRIGSCHOOL2026 -->
+
+    <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="../data/charts.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script> 
+ <script src="../data/supabase.js" defer></script>
+<script src="../data/studentSorting.js" defer></script>
+<script src="../data/confirmDialog.js" defer></script>
+<script src="headTeachersData.js" defer></script>
+<script src="../data/authenticPage.js" defer></script>
+<script src="headDatas/studentsData.js" defer></script>
+<script src="headDatas/teachersData.js" defer></script>
+<script src="headDatas/headScoreSheet.js" defer></script>
+<script src="headDatas/marksScore.js" defer></script>
+<script src="../data/studentTerminal.js" defer></script>
+<script src="headDatas/dashViewClasses.js" defer></script>
+<script src="../data/staffSignature.js" defer></script>
+<script src="../teacher_page/script/changePassword.js" defer></script>
+<script src="headProtectionPage.js" defer></script>
+<script src="apps.js" type="text/javascript" defer></script>
+</body>
+</html>
