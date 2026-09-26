@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crips-login</title>
+      <script src="https://kit.fontawesome.com/41d51bfab0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <!-- installable app: manifest, home-screen icons, service worker -->
+    <meta name="theme-color" content="#1b4332">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CRIPS MS">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="app-icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="app-icons/apple-touch-icon.png">
+    <script src="pwa.js"></script>
+</head>
+<body>
+
+
+
+  <div class="form-login">
+    <!-- <h3>Login</h3> -->
+    <img src="CRIG-LOGO1.png" alt="logo" class="log-logo">
+    <p class="welcome-text">Welcome To CRIPS MS!</p>
+    <p class="login-text-direction">Enter email and password to login.</p>
+
+    <form  id="login-form">
+      <div class="form-group">
+        <label for="user_name">Email</label>
+        <div class="form-input-img">
+          <i class="fa-solid fa-user"></i>
+          <input type="email" id="user_name">
+        </div>
+      </div>
+
+       <div class="form-group">
+        <label for="password">Password</label>
+        <div class="form-input-img">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password"  id="user_password">
+
+           <div class="right">
+      <i class="fa-solid fa-eye"  id="toggle-password"></i>
+    </div>
+        </div>
+      </div>
+`
+      <button class="submit-btn" type="submit" id="login-submit-btn">Sign In</button>
+
+      <p class="forgot-text">If forgotten password, contact admin.</p>
+
+    </form>
+  </div>
+
+    <div class="success-message-show" id="success-show">
+      
+    </div>
+
+    <div class="error-message-show" id="error-show">
+     
+    </div>
+
+
+    <p class="developer-text">Powered by: McCode Networks (mccodenetworks@gmail.com)</p>
+
+                 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>     
+ <script src="data/supabase.js" defer></script>
+<script src="data/authenticPage.js" defer></script>
+<script src="./admin_page/passwordToggle.js" defer></script>
+  
+     
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1b4332">
+    <title>CRIPS MS - Offline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: #f7f9f4;
+            color: #1f2a24;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            text-align: center;
+        }
+
+        .offline-card {
+            max-width: 360px;
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .offline-card img {
+            width: 88px;
+            margin-bottom: 16px;
+        }
+
+        .offline-card h1 {
+            font-size: 1.3rem;
+            color: #1b4332;
+            margin-bottom: 8px;
+        }
+
+        .offline-card p {
+            color: #6b7770;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .offline-card button {
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 20px;
+            background: #2d6a4f;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-card">
+        <img id="offline-logo" alt="CRIG Primary School logo" hidden>
+        <h1>You're offline</h1>
+        <p>CRIPS MS needs an internet connection. Check your connection and try again.</p>
+        <button type="button" onclick="window.location.reload()">Try again</button>
+    </div>
+    <script>
+        /* this page can be shown in place of any portal page, where a
+           relative path would point inside that portal's folder, so the
+           cached logo is found from the service worker's location */
+        (function () {
+            var worker = navigator.serviceWorker && navigator.serviceWorker.controller;
+            var base = worker ? worker.scriptURL : window.location.href;
+            var logo = document.getElementById("offline-logo");
+            logo.onload = function () { logo.hidden = false; };
+            logo.src = new URL("app-icons/icon-192.png", base).href;
+        })();
+    </script>
+</body>
+</html>

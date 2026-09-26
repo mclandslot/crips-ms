@@ -1,0 +1,230 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    /* ---- Core palette ---- */
+    --green-900: #1b4332;
+    --green-700: #2d6a4f;
+    --green-500: #52b788;
+    --green-100: #d8f3dc;
+    --earth-500: #d68c45;
+    --earth-700: #a96a2c;
+    --bg: #f7f9f4;
+    --surface: #ffffff;
+    --text: #1f2a24;
+    --text-muted: #6b7770;
+    --border: #e3e8e1;
+    --danger: #c0392b;
+    --warning: #e67e22;
+    --info: #2980b9;
+    --shadow: 0 2px 8px rgba(27, 67, 50, 0.06);
+    --radius: 10px;
+}
+
+body{
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+     'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+     font-size: 1rem;
+}
+
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 1rem 2rem;
+  width: 100%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  /* border-bottom: 1px solid var(--border); */
+  box-shadow: var(--shadow);
+}
+
+header img{
+  width: 40px;
+}
+
+.form-login{
+  width: min(350px, 90%);
+  padding: 2rem 1.5rem;
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.form-login h3{
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: .5rem;
+}
+
+.welcome-text{
+  margin-bottom: .5rem;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.login-text-direction{
+  font-size: .9rem;
+  margin-bottom: .7rem;
+}
+
+.form-group{
+  /* background-color: orange; */
+  margin-bottom: .3rem;
+}
+
+.form-group label{
+  margin-bottom: .1rem;
+  color: var(--text);
+}
+
+.form-input-img{
+  position: relative;
+  display: flex;
+  margin-top: .5rem;
+}
+
+.form-input-img input{
+  width: 100%;
+  padding: .5rem .5rem .8rem 2.5rem;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  transition: all .3s ease-in-out;
+  outline: 0;
+}
+.form-input-img input:focus{
+  border: 1px solid var(--green-500);
+}
+
+.form-input-img i{
+  position: absolute;
+  width: min(18px, 24px);
+  top: 50%;
+  left: .5rem;
+  transform: translateY(-50%);
+}
+
+.right {
+  position: relative;
+  top: 50%;
+  right: 40px;
+  cursor: pointer;
+}
+
+.submit-btn{
+  width: 100%;
+  margin-top: 0rem;
+  padding: .6rem;
+  font-size: poppins;
+  background-color: var(--green-700);
+  color: #fff;
+  font-size: 1.1rem;
+  border: 0;
+  border-radius: 5px;
+  transition: all .3s ease-in-out;
+  cursor: pointer;
+}
+
+#toggle-password {
+  cursor: pointer;
+  z-index: 99;
+}
+
+.forgot-text{
+  font-size: .9rem;
+  text-align: left;
+  color: rgb(12, 12, 12);
+  margin-top: .8rem;
+}
+
+.submit-btn:hover{
+   background-color: var(--green-900);
+}
+
+.success-message-show{
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  /* min-width: 200px; */
+  transform: translateX(-50%);
+  padding: 0.7rem 1.5rem;
+  color: var(--green-900);
+  background: var(--green-100);
+  z-index: 99;
+  border-radius: var(--radius);
+  transition: all .3s ease-in-out;
+  /* box-shadow: 0 0 15px rgb(0,0,0,.0); */
+  display: none;
+  font-size: .9rem;
+  text-align: center;
+  font-family: poppins;
+}
+.success-message-show i, .error-message-show i{
+  margin-right: 5px;
+}
+
+.error-message-show{
+   position: absolute;
+   top: -10%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+  /* min-width: 300px; */
+  transform: translateX(-50%);
+  padding: 0.7rem 1.5rem;
+  color: var(--danger);
+  background: rgb(250, 224, 224);
+  z-index: 99;
+  border-radius: var(--radius);
+  display: none;
+  transition: all .3s ease-in-out;
+  z-index: 10;
+}
+
+.show-message{
+  align-items: center;
+  display: flex;
+  top: 1%;
+  transition: all .3s ease-in-out;
+}
+
+.developer-text{
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .6rem;
+  color: var(--text-muted)
+}
+
+.log-logo{
+  display: block;
+  margin-inline: auto;
+  margin-bottom: .5rem;
+  width: 80px;
+  box-shadow: 0 4px 10px rgba(12, 12, 12, 0.384);
+  border-radius: 50%;
+}
+
+@media (max-width: 800px) {
+  .error-message-show, .success-message-show{
+  font-size: 12px;
+  width: 250px;
+}
+}
