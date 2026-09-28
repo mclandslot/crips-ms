@@ -4,6 +4,10 @@ activeLinks.forEach(navLink =>{
     navLink.addEventListener("click", ()=>{
         document.querySelector(".active")?.classList.remove("active");
         navLink.classList.add("active");
+
+        // on phones the menu slides over the page, so close it once a
+        // link is picked and the chosen page is visible
+        document.getElementById("mobile-menu").classList.remove("show-sm-menu");
     })
 })
 
@@ -312,8 +316,10 @@ document.getElementById("toggle-in-menu").addEventListener("click", ()=>{
 // })
 
 // function to close mobile side bar
-window.addEventListener('click', (e)=>{
-  const mobileOverSideBar = document.getElementById("mobile-menu");
+// listens on the overlay itself: iOS Safari does not pass taps on a plain
+// div up to window, so a window listener never closed the menu on iPhone
+const mobileOverSideBar = document.getElementById("mobile-menu");
+mobileOverSideBar.addEventListener('click', (e)=>{
   if(e.target === mobileOverSideBar){
     mobileOverSideBar.classList.remove("show-sm-menu");
   }
