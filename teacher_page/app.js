@@ -28,6 +28,11 @@ activeLinks.forEach(navLink =>{
       accountPop.style.display ="block";
     })
 
+     // function to refresh the page
+    document.getElementById("refresh-page").addEventListener("click", ()=>{
+      window.location.reload();
+    })
+
      // function to close account page
     document.getElementById("close-accounts").addEventListener("click", ()=>{
     const accountClosePop = document.getElementById("account-model-box");
