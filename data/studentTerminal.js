@@ -843,7 +843,11 @@ function renderAllTerminalReports() {
               <h5>PHONE: 0503263420</h5>
               <h4 class="dark-over">TERMINAL REPORT</h4>
             </div>
-            <div class="student-profile-img"></div>
+            <div class="student-profile-img">
+              ${studentRow.picture_url
+                ? `<img src="${escapeHtml(studentRow.picture_url)}" alt="student picture">`
+                : ""}
+            </div>
           </div>
 
           <div class="class-in-information">
@@ -893,7 +897,7 @@ function renderAllTerminalReports() {
             <h4>CONDUCT: <span>${remarkOrDots(studentRow.conduct, 159)}</span></h4>
             <h4>ATTITUDE: <span>${remarkOrDots(studentRow.attitude, 159)}</span></h4>
             <h4>INTEREST: <span>${remarkOrDots(studentRow.interest, 159)}</span></h4>
-            <h4>CLASS TEACHER'S REMARKS: <span>${remarkOrDots(studentRow.classRemark, 120)}</span></h4>
+            <h4>CLASS TEACHER'S REMARKS: <span>${remarkOrDots(String(studentRow.classRemark ?? "").toUpperCase(), 120)}</span></h4>
           </div>
 
           <div class="grade-box-flex">
@@ -1078,7 +1082,9 @@ function printAllTerminalReports() {
      overflow: hidden;
 }
 .student-profile-img img{
+    display: block;
     width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
