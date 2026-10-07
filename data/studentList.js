@@ -5,6 +5,11 @@ const supabaseStudentsDataList = window.supabaseClient;
 let editingStudentId = null;
 let isSubmitting = false;
 
+// the photo already stored for the student being edited, and whether the
+// admin pressed "Remove picture" for it
+let editingStudentPictureUrl = null;
+let removeStudentPicture = false;
+
 
 // ─────────────────────────────────────
 // Initialize App
@@ -26,6 +31,12 @@ loadFilterClasses();
 
   const form = document.getElementById("studentForm");
   if (form) form.addEventListener("submit", handleStudentSubmit);
+
+  const pictureInput = document.getElementById("studentPicture");
+  if (pictureInput) pictureInput.addEventListener("change", handleStudentPictureChange);
+
+  const removePictureBtn = document.getElementById("removeStudentPictureBtn");
+  if (removePictureBtn) removePictureBtn.addEventListener("click", handleRemoveStudentPicture);
 
   subscribeToStudentChanges();
 
@@ -238,6 +249,12 @@ async function deleteStudent(id) {
 
   try {
 
+    const { data: student } = await supabaseStudentsDataList
+      .from("students")
+      .select("picture_url")
+      .eq("id", id)
+      .maybeSingle();
+
     await supabaseStudentsDataList
       .from("parents")
       .delete()
@@ -249,6 +266,8 @@ async function deleteStudent(id) {
       .eq("id", id);
 
     if (error) throw error;
+
+    await deleteStoredStudentPicture(student?.picture_url);
 
     loadStudents();
 
@@ -308,6 +327,10 @@ async function editStudent(id) {
       setValue("parentAddress", parent.address);
       setValue("workArea", parent.staff_type);
     }
+
+    editingStudentPictureUrl = student.picture_url || null;
+    removeStudentPicture = false;
+    showStudentPicturePreview(editingStudentPictureUrl);
 
     document.getElementById("addStudentBnt").textContent = "Update Student";
     document.getElementById("add-student").style.display = "flex";
@@ -456,12 +479,15 @@ const studentData = {
 };
 
     // ───── Upload Image ─────
+    // the photo is cropped to the report card's passport frame and
+    // shrunk to a few kilobytes before it leaves the browser
     const file = document.getElementById("studentPicture").files[0];
     if (file) {
-      const filePath = `students/${Date.now()}-${file.name}`;
+      const photo = await prepareStudentPhoto(file);
+      const filePath = `students/${Date.now()}.jpg`;
       const { error } = await supabaseStudentsDataList.storage
         .from("student-pictures")
-        .upload(filePath, file);
+        .upload(filePath, photo, { contentType: "image/jpeg" });
       if (error) throw error;
 
       const { data } = supabaseStudentsDataList.storage
@@ -469,7 +495,16 @@ const studentData = {
         .getPublicUrl(filePath);
 
       studentData.picture_url = data.publicUrl;
+    } else if (removeStudentPicture) {
+      studentData.picture_url = null;
     }
+
+    // the old file is removed only after the student row stops pointing
+    // at it, so a failed save never leaves a broken picture link
+    const replacedPictureUrl =
+      editingStudentId && (file || removeStudentPicture)
+        ? editingStudentPictureUrl
+        : null;
 
     let studentId;
 
@@ -481,6 +516,10 @@ const studentData = {
         .eq("id", editingStudentId);
       if (error) throw error;
       studentId = editingStudentId;
+
+      if (replacedPictureUrl && replacedPictureUrl !== studentData.picture_url) {
+        await deleteStoredStudentPicture(replacedPictureUrl);
+      }
     } else {
       const { data, error } = await supabaseStudentsDataList
         .from("students")
@@ -526,6 +565,145 @@ const studentData = {
   }
 
   isSubmitting = false;
+}
+
+
+// ─────────────────────────────────────
+// Student Photo
+// The terminal report shows the photo in a 100 x 120 frame, so the
+// picture is centre-cropped to that 5:6 shape and drawn at 3x the frame
+// (sharp enough to print), then re-encoded as JPEG, lowering the quality
+// until the file is under STUDENT_PHOTO_MAX_BYTES.
+// ─────────────────────────────────────
+const STUDENT_PHOTO_WIDTH = 300;
+const STUDENT_PHOTO_HEIGHT = 360;
+const STUDENT_PHOTO_MAX_BYTES = 40 * 1024;
+
+async function prepareStudentPhoto(file) {
+  const image = await loadImageFile(file);
+
+  const targetRatio = STUDENT_PHOTO_WIDTH / STUDENT_PHOTO_HEIGHT;
+  let cropWidth = image.naturalWidth;
+  let cropHeight = image.naturalHeight;
+
+  if (cropWidth / cropHeight > targetRatio) {
+    cropWidth = cropHeight * targetRatio;
+  } else {
+    cropHeight = cropWidth / targetRatio;
+  }
+
+  const cropX = (image.naturalWidth - cropWidth) / 2;
+  /* passport photos keep the head near the top, so a tall picture is
+     cropped from just below the top rather than the exact middle */
+  const cropY = (image.naturalHeight - cropHeight) * 0.25;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = STUDENT_PHOTO_WIDTH;
+  canvas.height = STUDENT_PHOTO_HEIGHT;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#fff"; // transparent PNG areas become white, not black
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(
+    image,
+    cropX, cropY, cropWidth, cropHeight,
+    0, 0, canvas.width, canvas.height
+  );
+
+  let quality = 0.85;
+  let blob = await canvasToJpeg(canvas, quality);
+
+  while (blob.size > STUDENT_PHOTO_MAX_BYTES && quality > 0.3) {
+    quality -= 0.1;
+    blob = await canvasToJpeg(canvas, quality);
+  }
+
+  return blob;
+}
+
+/* shows the small preview under the picture field, or hides it when
+   there is no picture */
+function showStudentPicturePreview(src) {
+  const preview = document.getElementById("studentPicturePreview");
+  const img = document.getElementById("studentPicturePreviewImg");
+  if (!preview || !img) return;
+
+  if (img.src.startsWith("blob:")) URL.revokeObjectURL(img.src);
+
+  if (src) {
+    img.src = src;
+    preview.hidden = false;
+  } else {
+    img.removeAttribute("src");
+    preview.hidden = true;
+  }
+}
+
+function handleStudentPictureChange(e) {
+  const file = e.target.files[0];
+
+  if (file) {
+    removeStudentPicture = false;
+    showStudentPicturePreview(URL.createObjectURL(file));
+  } else {
+    showStudentPicturePreview(removeStudentPicture ? null : editingStudentPictureUrl);
+  }
+}
+
+/* clears a newly chosen file and marks the stored photo for removal;
+   nothing is deleted until the form is saved */
+function handleRemoveStudentPicture() {
+  document.getElementById("studentPicture").value = "";
+  removeStudentPicture = Boolean(editingStudentPictureUrl);
+  showStudentPicturePreview(null);
+}
+
+/* public URLs look like .../storage/v1/object/public/student-pictures/<path>;
+   a failed delete only leaves an unused file behind, so it never blocks
+   the save */
+async function deleteStoredStudentPicture(publicUrl) {
+  if (!publicUrl) return;
+
+  const marker = "/student-pictures/";
+  const index = publicUrl.indexOf(marker);
+  if (index === -1) return;
+
+  const path = decodeURIComponent(publicUrl.slice(index + marker.length).split("?")[0]);
+
+  const { error } = await supabaseStudentsDataList.storage
+    .from("student-pictures")
+    .remove([path]);
+
+  if (error) console.error("Picture delete error:", error.message);
+}
+
+function loadImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("The selected picture could not be read"));
+    };
+
+    image.src = url;
+  });
+}
+
+function canvasToJpeg(canvas, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => blob ? resolve(blob) : reject(new Error("Picture compression failed")),
+      "image/jpeg",
+      quality
+    );
+  });
 }
 
 
@@ -581,10 +759,11 @@ async function viewStudent(id) {
 
     const imgContainer = document.querySelector(".profile-box-img");
 
-    if (imgContainer && student.picture_url) {
+    if (imgContainer) {
 
-      imgContainer.innerHTML =
-        `<img src="${student.picture_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      imgContainer.innerHTML = student.picture_url
+        ? `<img src="${student.picture_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+        : "";
 
     }
 
@@ -614,8 +793,11 @@ function setValue(id, value) {
 function closeForm() {
 
   editingStudentId = null;
+  editingStudentPictureUrl = null;
+  removeStudentPicture = false;
 
   document.getElementById("studentForm").reset();
+  showStudentPicturePreview(null);
 
   document.getElementById("add-student").style.display = "none";
 
