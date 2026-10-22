@@ -21,7 +21,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("load-students-data-btn")
     ?.addEventListener("click", loadStudentsForMarks);
+
+  document
+    .getElementById("marks-student-search")
+    ?.addEventListener("input", filterMarksRows);
 });
+
+/* =====================================
+   SEARCH STUDENTS BY NAME
+===================================== */
+function filterMarksRows() {
+  const query = document
+    .getElementById("marks-student-search")
+    .value.trim()
+    .toLowerCase();
+
+  const tbody = document.getElementById("marks-entering-data");
+  let visible = 0;
+
+  tbody.querySelectorAll("tr").forEach((row) => {
+    const nameCell = row.querySelector("td.student");
+    if (!nameCell) return; // loading / empty / no-match message rows
+
+    const match = nameCell.textContent.toLowerCase().includes(query);
+    row.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  tbody.querySelector(".marks-no-match")?.remove();
+
+  if (query && visible === 0 && tbody.querySelector("td.student")) {
+    const noMatch = document.createElement("tr");
+    noMatch.className = "marks-no-match";
+    noMatch.innerHTML = `<td colspan="6">No student matches your search.</td>`;
+    tbody.appendChild(noMatch);
+  }
+}
 
 /* =====================================
    GET CURRENT TERM ID
@@ -168,6 +203,7 @@ async function loadStudentsForMarks() {
   document.getElementById("marks-selected-class-name").textContent = className;
   document.getElementById("selected-subject").textContent = subject;
   document.getElementById("total-student-show-text").textContent = "";
+  document.getElementById("marks-student-search").value = "";
 
   const tbody = document.getElementById("marks-entering-data");
   tbody.innerHTML = `<tr><td colspan="6">Loading students...</td></tr>`;
