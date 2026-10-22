@@ -75,6 +75,7 @@ async function loadAllStudents() {
         first_name,
         gender,
         class_id,
+        picture_url,
         classes(class_name)
       `);
 
@@ -173,6 +174,19 @@ function showStudentsForSelectedClass() {
       <span class="student-avatar">${initials}</span>
       <span class="student-fullname">${fullName}</span>
     `;
+
+    // show the student's picture in place of the initials; keep the
+    // initials if there is no picture or it fails to load
+    if (student.picture_url) {
+      const avatar = div.querySelector(".student-avatar");
+      const img = document.createElement("img");
+      img.src = student.picture_url;
+      img.alt = fullName;
+      img.onload = () => {
+        avatar.textContent = "";
+        avatar.appendChild(img);
+      };
+    }
 
     grid.appendChild(div);
 
