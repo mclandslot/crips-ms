@@ -647,6 +647,104 @@ cursor: pointer;
   margin-bottom: 20px;
 }
 
+.marks-container .card-header {
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+/* search box in the marks entry header */
+.marks-search {
+  position: relative;
+  flex: 0 1 280px;
+  min-width: 0;
+}
+
+.marks-search i {
+  position: absolute;
+  left: .9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .85rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color .2s ease;
+}
+
+.marks-search input {
+  /* drop Safari's native search styling (inset shadow, own radius) */
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px; /* iOS minimum tap target */
+  margin: 0;
+  padding: 0 1rem 0 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  outline: 0;
+  box-shadow: var(--shadow);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px; /* 16px+ stops iOS zooming in on focus */
+  line-height: normal;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.marks-search input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+/* WebKit's search decoration and default clear button */
+.marks-search input::-webkit-search-decoration,
+.marks-search input::-webkit-search-results-button,
+.marks-search input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+.marks-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  background: var(--text-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.3 10.2-1.1 1.1L8 9.1l-2.2 2.2-1.1-1.1L6.9 8 4.7 5.8l1.1-1.1L8 6.9l2.2-2.2 1.1 1.1L9.1 8Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.3 10.2-1.1 1.1L8 9.1l-2.2 2.2-1.1-1.1L6.9 8 4.7 5.8l1.1-1.1L8 6.9l2.2-2.2 1.1 1.1L9.1 8Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.marks-search input:focus {
+  border-color: var(--green-500);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, .25);
+}
+
+.marks-search:focus-within i {
+  color: var(--green-700);
+}
+
+body.dark .marks-search:focus-within i {
+  color: var(--green-500);
+}
+
+@media (max-width: 600px) {
+  .marks-search {
+    flex-basis: 100%;
+  }
+}
+
+/* same search box above the terminal report cards */
+.report-search {
+  max-width: 320px;
+  margin: 1rem 0;
+}
+
+@media (max-width: 600px) {
+  .report-search {
+    max-width: none;
+  }
+}
+
 .card-header h2 {
   margin: 0;
   font-size: 20px;
@@ -1423,6 +1521,14 @@ td {
   color: var(--primary-btn);
   font-size: .75rem;
   font-weight: 700;
+  overflow: hidden;
+}
+
+.student-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .student-fullname{
@@ -2621,6 +2727,7 @@ background-color: red;
 
   .teacher-report-actions,
   .remark-btn,
+  .report-search,
   .remark-modal-overlay {
     display: none !important;
   }
@@ -2729,6 +2836,13 @@ background-color: red;
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  /* stacked header: let the marks search span the full width,
+     like the terminal reports search */
+  .card-header .marks-search {
+    flex: none;
+    width: 100%;
   }
 
   .save-btn {
@@ -3533,6 +3647,118 @@ width: 300px;
 
   #display-attendance-data-table tr td[colspan]::before {
     display: none;
+  }
+}
+
+/* =====================================
+   EDIT ATTENDANCE (view attendance table + modal)
+===================================== */
+.attendance-table .col-action {
+  white-space: nowrap;
+}
+
+.attendance-edit-btn {
+  padding: .45rem .8rem;
+  border-radius: 8px;
+  font-family: poppins;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.attendance-edit-btn i {
+  margin-right: 4px;
+}
+
+.attendance-edit-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.attendance-edit-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .6rem .75rem;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid transparent;
+  border-radius: 10px;
+  background: var(--main-container);
+  transition: var(--transition);
+}
+
+/* days changed but not yet saved */
+.attendance-edit-item.is-changed {
+  border-left-color: var(--pending-btn-span);
+}
+
+.attendance-edit-date {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--bold-h3);
+}
+
+.attendance-edit-toggle {
+  display: flex;
+  gap: .4rem;
+  flex-shrink: 0;
+}
+
+.attendance-edit-toggle button {
+  min-height: 36px;
+  padding: .4rem .7rem;
+  border-radius: 8px;
+  font-family: poppins;
+  font-size: .8rem;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.attendance-edit-toggle .active-present {
+  box-shadow: 0 0 0 2px rgba(46, 139, 96, .25);
+}
+
+.attendance-edit-toggle .active-absent {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, .25);
+}
+
+.attendance-edit-empty {
+  text-align: center;
+  padding: 1rem;
+  color: var(--bold-p);
+  font-size: .9rem;
+}
+
+#save-attendance-edit-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 540px) {
+  .attendance-edit-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .attendance-edit-toggle button {
+    flex: 1;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  #display-attendance-data-table td.col-action {
+    justify-content: flex-end;
+  }
+
+  #display-attendance-data-table td.col-action::before {
+    display: none;
+  }
+
+  #display-attendance-data-table .attendance-edit-btn {
+    width: 100%;
+    min-height: 44px;
   }
 }
 
