@@ -131,9 +131,50 @@ async function loadStudentsByClass() {
       </td>
     `;
 
+    row.dataset.search =
+      `${fullName} ${student.admission_number || ""}`.toLowerCase();
+
     tableBody.appendChild(row);
   });
+
+  // keep the current search applied when another class is loaded
+  filterStudentDetailsRows();
 }
+
+/* =====================================
+   SEARCH STUDENTS BY NAME / ADMISSION NO
+===================================== */
+function filterStudentDetailsRows() {
+  const tableBody = document.getElementById("student-details-tbody");
+  const input = document.getElementById("student-details-search");
+  if (!tableBody || !input) return;
+
+  const query = input.value.trim().toLowerCase();
+  let visible = 0;
+  let searchable = 0;
+
+  tableBody.querySelectorAll("tr").forEach((row) => {
+    if (row.dataset.search === undefined) return; // message rows
+    searchable++;
+
+    const match = row.dataset.search.includes(query);
+    row.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  tableBody.querySelector(".student-no-match")?.remove();
+
+  if (query && searchable && visible === 0) {
+    const noMatch = document.createElement("tr");
+    noMatch.className = "student-no-match";
+    noMatch.innerHTML = `<td colspan="9">No student matches your search.</td>`;
+    tableBody.appendChild(noMatch);
+  }
+}
+
+document
+  .getElementById("student-details-search")
+  ?.addEventListener("input", filterStudentDetailsRows);
 
 /* =====================================
    VIEW STUDENT IN MODAL
@@ -190,10 +231,12 @@ async function viewStudentInfo(studentId) {
   const fullName = studentFullName(student);
   const className = student.classes?.class_name || "-";
   const status = student.status || "-";
-//   const pictureUrl = student.picture_url || "";
+  const pictureUrl = student.picture_url || "";
 
   const overlay = document.getElementById("students-details-overlay");
-  const profileBox = document.querySelector(".profile-box-img");
+  const profileBox = document.querySelector(
+    "#students-details-overlay .profile-box-img"
+  );
 
   setText("detail-full-name", fullName || "-");
   setText("detail-class", className);
@@ -214,11 +257,30 @@ async function viewStudentInfo(studentId) {
   setText("detail-address", parentData?.address || "-");
   setText("detail-staff-type", parentData?.staff_type || "-");
 
-//   if (profileBox) {
-//     profileBox.innerHTML = pictureUrl
-//       ? `<img src="${escapeHtml(pictureUrl)}" alt="student-picture" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`
-//       : `<img src="icons/Student-picture.JPG" alt="student-picture" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
-//   }
+  if (profileBox) {
+    // initials show until the picture loads, and stay if there is no
+    // picture or it fails to load
+    const initials =
+      `${(student.surname || " ")[0]}${(student.first_name || " ")[0]}`
+        .trim()
+        .toUpperCase();
+
+    profileBox.innerHTML = `<span class="profile-box-initials">${escapeHtml(initials || "?")}</span>`;
+
+    if (pictureUrl) {
+      const img = document.createElement("img");
+      img.src = pictureUrl;
+      img.alt = fullName || "student picture";
+      img.onload = () => {
+        // a quicker click on another student may have replaced this one
+        if (profileBox.dataset.studentId !== String(student.id)) return;
+        profileBox.innerHTML = "";
+        profileBox.appendChild(img);
+      };
+    }
+
+    profileBox.dataset.studentId = student.id;
+  }
 
   if (overlay) {
     overlay.style.display = "flex";
