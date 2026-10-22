@@ -77,9 +77,49 @@ async function loadTeachersForHeadTeacher() {
       </td>
     `;
 
+    row.dataset.search = `${fullName} ${teacher.phone || ""}`.toLowerCase();
+
     tableBody.appendChild(row);
   });
+
+  // keep the current search applied when the table reloads
+  filterTeacherDetailsRows();
 }
+
+/* =====================================
+   SEARCH STAFF BY NAME / CONTACT
+===================================== */
+function filterTeacherDetailsRows() {
+  const tableBody = document.getElementById("teachers-details-tbody");
+  const input = document.getElementById("teacher-details-search");
+  if (!tableBody || !input) return;
+
+  const query = input.value.trim().toLowerCase();
+  let visible = 0;
+  let searchable = 0;
+
+  tableBody.querySelectorAll("tr").forEach((row) => {
+    if (row.dataset.search === undefined) return; // message rows
+    searchable++;
+
+    const match = row.dataset.search.includes(query);
+    row.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  tableBody.querySelector(".teacher-no-match")?.remove();
+
+  if (query && searchable && visible === 0) {
+    const noMatch = document.createElement("tr");
+    noMatch.className = "teacher-no-match";
+    noMatch.innerHTML = `<td colspan="8">No staff matches your search.</td>`;
+    tableBody.appendChild(noMatch);
+  }
+}
+
+document
+  .getElementById("teacher-details-search")
+  ?.addEventListener("input", filterTeacherDetailsRows);
 
 /* =====================================
    VIEW TEACHER DETAILS IN MODAL
