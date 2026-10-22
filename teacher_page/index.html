@@ -195,6 +195,11 @@
                                     <p class="bold-p">Track student attendance</p>
                                     <p class="bold-p" id="term-name"></p>
 
+                                 <div class="marks-search report-search">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="search" id="attendance-student-search" placeholder="Search student name..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search student name">
+                                 </div>
+
                                  <div class="mark-list-attendance">
                                                 <table class="attendance-table">
                                                     <thead>
@@ -203,6 +208,7 @@
                                                         <th>Days Present</th>
                                                         <th>Days Absent</th>
                                                         <th>Attendance %</th>
+                                                        <th>Action</th>
                                                         <!-- <th>Date Marked</th> -->
                                                     </tr>
                                                     </thead>
@@ -326,6 +332,11 @@
         <span class="report-meta-value" id="assigned-class-report-year">-</span>
       </div>
     </div>
+  </div>
+
+  <div class="marks-search report-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="search" id="report-student-search" placeholder="Search student name..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search student name">
   </div>
 
   <div class="teacher-report-cards" id="teacher-report-cards"></div>
@@ -472,7 +483,11 @@
                                                 <h2>Marks Entry - <span id="selected-subject"></span></h2>
                                                 <p><span id="marks-selected-class-name"></span> • <span id="total-student-show-text"></span></p>
                                                 </div>
-                                           
+
+                                                <div class="marks-search">
+                                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                                    <input type="search" id="marks-student-search" placeholder="Search student name..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search student name">
+                                                </div>
                                             </div>
 
                                             <div class="table-wrapper">
@@ -716,6 +731,39 @@
 
     
 
+
+<!-- EDIT ATTENDANCE MODAL -->
+<div id="attendance-edit-modal" class="remark-modal-overlay">
+  <div class="remark-modal">
+    <div class="remark-modal-header">
+      <h3>Edit Attendance</h3>
+      <button type="button" id="close-attendance-edit-modal" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="remark-modal-body">
+      <div class="remark-student-info">
+        <div class="remark-info-item">
+          <span class="remark-info-label">Student</span>
+          <span class="remark-info-value" id="attendance-edit-student-name">-</span>
+        </div>
+        <div class="remark-info-item">
+          <span class="remark-info-label">Days Present</span>
+          <span class="remark-info-value" id="attendance-edit-present">0</span>
+        </div>
+        <div class="remark-info-item">
+          <span class="remark-info-label">Days Absent</span>
+          <span class="remark-info-value" id="attendance-edit-absent">0</span>
+        </div>
+      </div>
+
+      <div class="attendance-edit-list" id="attendance-edit-list"></div>
+    </div>
+
+    <div class="remark-modal-footer">
+      <button type="button" id="save-attendance-edit-btn" class="btn-save-remarks" disabled>Save Changes</button>
+    </div>
+  </div>
+</div>
 
               <!-- my signature -->
 <div class="password-overlay" id="signature-overlay">
