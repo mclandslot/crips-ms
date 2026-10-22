@@ -249,14 +249,21 @@
       <h2>Student Information</h2>
       <p>All students information</p>
 
-      <div class="filter-row">
-        <select id="view-class-info">
-          <option value="">Select Class</option>
-        </select>
+      <div class="students-toolbar">
+        <div class="filter-row">
+          <select id="view-class-info">
+            <option value="">Select Class</option>
+          </select>
 
 
-        <button id="view-students-btn" class="view-student-btn">View student</button>
+          <button id="view-students-btn" class="view-student-btn">View student</button>
 
+        </div>
+
+        <div class="table-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="search" id="student-details-search" placeholder="Search name or admission no..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search students">
+        </div>
       </div>
 
       <table class="student-details-table">
@@ -286,6 +293,11 @@
        <section id="teachers-data" class="section-box teachers-datas">
       <h2>Staff Information</h2>
       <p>All staff employed</p>
+
+      <div class="table-search teachers-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" id="teacher-details-search" placeholder="Search name or contact..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search staff">
+      </div>
 
       <table class="student-details-table">
         <thead>
