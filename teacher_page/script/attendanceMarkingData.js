@@ -574,7 +574,7 @@ async function loadAttendanceForAssignedTeacher() {
 
   if (!tableBody) return;
 
-  tableBody.innerHTML = `<tr><td colspan="4">Loading attendance...</td></tr>`;
+  tableBody.innerHTML = `<tr><td colspan="5">Loading attendance...</td></tr>`;
 
   try {
     const { data: userData, error: userError } =
@@ -605,7 +605,7 @@ async function loadAttendanceForAssignedTeacher() {
         .single();
 
     if (classError || !classAssign) {
-      tableBody.innerHTML = `<tr><td colspan="4">No class assigned</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5">No class assigned</td></tr>`;
       return;
     }
 
@@ -648,7 +648,7 @@ async function loadAttendanceForAssignedTeacher() {
     tableBody.innerHTML = "";
 
     if (!students || students.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="4">No students found</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5">No students found</td></tr>`;
       return;
     }
 
@@ -681,15 +681,247 @@ async function loadAttendanceForAssignedTeacher() {
         <td data-label="Days Present">${present}</td>
         <td data-label="Days Absent">${absent}</td>
         <td data-label="Attendance %">${percentage}% (${present}/${usedTotalDays})</td>
+        <td data-label="Action" class="col-action">
+          <button type="button" class="edit-btn attendance-edit-btn">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
+        </td>
       `;
+
+      row
+        .querySelector(".attendance-edit-btn")
+        .addEventListener("click", () =>
+          openAttendanceEditModal(student, records, classId)
+        );
 
       tableBody.appendChild(row);
     });
+
+    // keep the current search applied when the table reloads
+    filterAttendanceRows();
   } catch (err) {
     console.error("Attendance error:", err);
-    tableBody.innerHTML = `<tr><td colspan="4">Error loading attendance</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="5">Error loading attendance</td></tr>`;
   }
 }
+
+/* =====================================
+   SEARCH STUDENTS BY NAME (view attendance)
+===================================== */
+function filterAttendanceRows() {
+  const tableBody = document.getElementById("display-attendance-data-table");
+  const input = document.getElementById("attendance-student-search");
+  if (!tableBody || !input) return;
+
+  const query = input.value.trim().toLowerCase();
+  let visible = 0;
+
+  tableBody.querySelectorAll("tr").forEach((row) => {
+    const nameCell = row.querySelector("td.col-student");
+    if (!nameCell) return; // loading / empty / no-match message rows
+
+    const match = nameCell.textContent.toLowerCase().includes(query);
+    row.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  tableBody.querySelector(".attendance-no-match")?.remove();
+
+  if (query && visible === 0 && tableBody.querySelector("td.col-student")) {
+    const noMatch = document.createElement("tr");
+    noMatch.className = "attendance-no-match";
+    noMatch.innerHTML = `<td colspan="5">No student matches your search.</td>`;
+    tableBody.appendChild(noMatch);
+  }
+}
+
+document
+  .getElementById("attendance-student-search")
+  ?.addEventListener("input", filterAttendanceRows);
+
+/* =====================================
+   EDIT ONE STUDENT'S ATTENDANCE
+
+   Lists every day already marked for the student this term and lets the
+   teacher flip a day between Present and Absent. Only the days that were
+   changed are saved, so the number of days marked never changes here.
+===================================== */
+let attendanceEditState = null;
+
+function formatAttendanceDate(dateValue) {
+  const date = new Date(`${dateValue}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return dateValue;
+
+  return date.toLocaleDateString(undefined, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+}
+
+function normaliseStatus(status) {
+  return (status || "").toLowerCase() === "absent" ? "Absent" : "Present";
+}
+
+function openAttendanceEditModal(student, records, classId) {
+  const modal = document.getElementById("attendance-edit-modal");
+  const list = document.getElementById("attendance-edit-list");
+  if (!modal || !list) return;
+
+  const days = [...records]
+    .filter((r) => r.date)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((r) => ({
+      date: r.date,
+      original: normaliseStatus(r.status),
+      status: normaliseStatus(r.status)
+    }));
+
+  attendanceEditState = { student, classId, days };
+
+  document.getElementById("attendance-edit-student-name").textContent =
+    studentFullName(student);
+
+  list.innerHTML = "";
+
+  if (!days.length) {
+    list.innerHTML = `<p class="attendance-edit-empty">No attendance has been marked for this student this term.</p>`;
+  }
+
+  days.forEach((day) => {
+    const item = document.createElement("div");
+    item.className = "attendance-edit-item";
+
+    item.innerHTML = `
+      <span class="attendance-edit-date">${formatAttendanceDate(day.date)}</span>
+      <div class="attendance-edit-toggle">
+        <button type="button" class="present"><i class="fa-solid fa-circle-check"></i>Present</button>
+        <button type="button" class="absent"><i class="fa-solid fa-circle-xmark"></i>Absent</button>
+      </div>
+    `;
+
+    const presentBtn = item.querySelector(".present");
+    const absentBtn = item.querySelector(".absent");
+
+    const paint = () => {
+      presentBtn.classList.toggle("active-present", day.status === "Present");
+      absentBtn.classList.toggle("active-absent", day.status === "Absent");
+      item.classList.toggle("is-changed", day.status !== day.original);
+    };
+
+    presentBtn.onclick = () => {
+      day.status = "Present";
+      paint();
+      updateAttendanceEditSummary();
+    };
+
+    absentBtn.onclick = () => {
+      day.status = "Absent";
+      paint();
+      updateAttendanceEditSummary();
+    };
+
+    paint();
+    list.appendChild(item);
+  });
+
+  updateAttendanceEditSummary();
+  modal.classList.add("active");
+}
+
+function updateAttendanceEditSummary() {
+  if (!attendanceEditState) return;
+
+  const { days } = attendanceEditState;
+  const present = days.filter((d) => d.status === "Present").length;
+  const changed = days.filter((d) => d.status !== d.original).length;
+
+  document.getElementById("attendance-edit-present").textContent = present;
+  document.getElementById("attendance-edit-absent").textContent =
+    days.length - present;
+
+  const saveBtn = document.getElementById("save-attendance-edit-btn");
+  saveBtn.disabled = changed === 0;
+  saveBtn.textContent = changed
+    ? `Save Changes (${changed})`
+    : "Save Changes";
+}
+
+function closeAttendanceEditModal() {
+  document.getElementById("attendance-edit-modal")?.classList.remove("active");
+  attendanceEditState = null;
+}
+
+async function saveAttendanceEdits() {
+  if (!attendanceEditState) return;
+
+  const { student, classId, days } = attendanceEditState;
+  const changedDays = days.filter((d) => d.status !== d.original);
+  if (!changedDays.length) return;
+
+  if (!currentTermId || !currentAcademicYearId) {
+    attendaceFeedBack.classList.add("show-message", "error");
+    attendaceFeedBack.innerHTML = "No term or year";
+    setTimeout(() => {
+      attendaceFeedBack.classList.remove("show-message", "error");
+    }, 3000);
+    return;
+  }
+
+  const saveBtn = document.getElementById("save-attendance-edit-btn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const records = changedDays.map((day) => ({
+    student_id: student.id,
+    class_id: classId,
+    term_id: currentTermId,
+    academic_year_id: currentAcademicYearId,
+    date: day.date,
+    status: day.status
+  }));
+
+  const { error } = await supabaseAttendanceMarks
+    .from("attendance")
+    .upsert(records, { onConflict: "student_id,term_id,date" });
+
+  if (error) {
+    console.error("Attendance edit error:", error.message);
+    attendaceFeedBack.classList.add("show-message", "error");
+    attendaceFeedBack.innerHTML = "Error updating attendance";
+    setTimeout(() => {
+      attendaceFeedBack.classList.remove("show-message", "error");
+    }, 3000);
+    updateAttendanceEditSummary();
+    return;
+  }
+
+  closeAttendanceEditModal();
+
+  attendaceFeedBack.classList.add("show-message", "success");
+  attendaceFeedBack.innerHTML = "Attendance updated";
+  setTimeout(() => {
+    attendaceFeedBack.classList.remove("show-message", "success");
+  }, 3000);
+
+  await loadAttendanceForAssignedTeacher();
+}
+
+document
+  .getElementById("close-attendance-edit-modal")
+  ?.addEventListener("click", closeAttendanceEditModal);
+
+document
+  .getElementById("save-attendance-edit-btn")
+  ?.addEventListener("click", saveAttendanceEdits);
+
+/* clicking the dimmed backdrop closes it, like the remark modal */
+document
+  .getElementById("attendance-edit-modal")
+  ?.addEventListener("click", (e) => {
+    if (e.target.id === "attendance-edit-modal") closeAttendanceEditModal();
+  });
 
 /* =====================================
    LOAD TERMS INTO DROPDOWN
