@@ -538,7 +538,43 @@ function renderAssignedClassTeacherReport() {
     `
     )
     .join("");
+
+  // keep the current search applied when the cards are redrawn
+  filterReportCards();
 }
+
+/* =====================================
+   SEARCH STUDENTS BY NAME
+===================================== */
+function filterReportCards() {
+  const container = document.getElementById("teacher-report-cards");
+  const input = document.getElementById("report-student-search");
+  if (!container || !input) return;
+
+  const query = input.value.trim().toLowerCase();
+  let visible = 0;
+
+  container.querySelectorAll(".student-report-card").forEach((card) => {
+    const name =
+      card.querySelector(".student-report-name")?.textContent.toLowerCase() || "";
+    const match = name.includes(query);
+    card.style.display = match ? "" : "none";
+    if (match) visible++;
+  });
+
+  container.querySelector(".report-no-match")?.remove();
+
+  if (query && visible === 0 && container.querySelector(".student-report-card")) {
+    const noMatch = document.createElement("p");
+    noMatch.className = "teacher-report-empty report-no-match";
+    noMatch.textContent = "No student matches your search.";
+    container.appendChild(noMatch);
+  }
+}
+
+document
+  .getElementById("report-student-search")
+  ?.addEventListener("input", filterReportCards);
 
 /* =====================================
    REMARK MODAL
