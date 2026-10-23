@@ -6,6 +6,7 @@ const supabaseAdminMerit = window.supabaseClient;
 const meritMessage = document.getElementById("form-feedback");
 
 let meritRows = [];
+let meritPager = null;
 // the Class column only earns its space when several classes are mixed together
 let meritShowClassColumn = false;
 let meritMeta = {
@@ -28,6 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("print-merit-btn")
     ?.addEventListener("click", printMeritOrder);
+
+  meritPager = window.createTablePager({
+    mountId: "meritPager",
+    noun: "student",
+    pageSize: 50,
+    onChange: renderMeritTable
+  });
 });
 
 /* =====================================
@@ -285,6 +293,8 @@ async function loadMeritOrder() {
       row.position = currentPosition;
     });
 
+    // a newly loaded class/term starts on page 1
+    meritPager?.reset();
     renderMeritTable();
     updateMeritSummary();
   } catch (err) {
@@ -301,15 +311,26 @@ function renderMeritTable() {
   if (!tableBody) return;
 
   if (!meritRows.length) {
+    meritPager?.slice(meritRows);
     tableBody.innerHTML = `<tr><td colspan="4">No order of merit data found</td></tr>`;
     return;
   }
 
-  tableBody.innerHTML = meritRows
+  /* only the current page is drawn; printing uses every row */
+  const page = meritPager
+    ? meritPager.slice(meritRows)
+    : { rows: meritRows, offset: 0 };
+
+  tableBody.innerHTML = meritRowsHtml(page.rows, page.offset);
+}
+
+/* numbered by place in the whole list, not in the page */
+function meritRowsHtml(rows, offset = 0) {
+  return rows
     .map(
       (row, index) => `
       <tr>
-        <td>${index + 1}</td>
+        <td>${offset + index + 1}</td>
         <td class="student-name-cell">${escapeMeritHtml(row.name)}</td>
         ${meritShowClassColumn ? `<td>${escapeMeritHtml(row.className)}</td>` : ""}
         <td><strong>${row.total}</strong></td>
@@ -357,6 +378,18 @@ function updateMeritSummary() {
 /* =====================================
    PRINT ORDER OF MERIT (A4 PORTRAIT)
 ===================================== */
+/* the screen shows one page; the printout gets every student */
+function meritPrintTableHtml() {
+  const wrapper = document.querySelector(".merit-table-wrapper");
+  if (!wrapper) return "";
+
+  const copy = wrapper.cloneNode(true);
+  const body = copy.querySelector("#merit-table-body");
+  if (body) body.innerHTML = meritRowsHtml(meritRows);
+
+  return copy.innerHTML;
+}
+
 function printMeritOrder() {
   const printArea = document.getElementById("merit-print-area");
 
@@ -501,7 +534,7 @@ function printMeritOrder() {
 
         <p class="merit-summary">${document.getElementById("merit-summary")?.innerHTML || ""}</p>
 
-        ${document.querySelector(".merit-table-wrapper")?.innerHTML || ""}
+        ${meritPrintTableHtml()}
       </body>
     </html>
   `);
