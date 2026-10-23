@@ -1,0 +1,171 @@
+/* =========================
+   CONFIRM DIALOG
+
+   Markup is injected by data/confirmDialog.js. Shared by the admin and
+   teacher pages, so every value either comes from the palette both
+   stylesheets define (--surface, --danger, --green-700 ...) or carries a
+   fallback - admin.css defines --btn-radius and --btn-font-fm,
+   teacher_page/index.css does not.
+
+   Link it AFTER the page stylesheet so the overlay wins on z-index.
+========================= */
+.confirm-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(16, 34, 26, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.confirm-overlay.open{
+  display: flex;
+  animation: confirm-fade .16s ease-out;
+}
+
+.confirm-card{
+  width: 100%;
+  max-width: 420px;
+  padding: 1.75rem 1.5rem 1.25rem;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 24px 48px rgba(16, 34, 26, 0.28);
+  text-align: center;
+  animation: confirm-rise .18s ease-out;
+}
+
+@keyframes confirm-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes confirm-rise {
+  from { opacity: 0; transform: translateY(10px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.confirm-icon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto .9rem;
+  border-radius: 50%;
+  font-size: 1.4rem;
+}
+
+/* the icon ring and the accept button are the only things the tone
+   changes - the rest of the card stays identical */
+.tone-danger  .confirm-icon{ background: #fdecea; color: var(--danger); }
+.tone-warning .confirm-icon{ background: #fdf3e7; color: var(--warning); }
+.tone-primary .confirm-icon{ background: var(--green-100); color: var(--green-700); }
+
+.confirm-title{
+  margin-bottom: .45rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.confirm-message{
+  margin-bottom: .9rem;
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.confirm-details{
+  margin-bottom: 1.1rem;
+  padding: .75rem .9rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  list-style: none;
+  text-align: left;
+  /* a long list of blocking records scrolls instead of pushing the
+     buttons off screen */
+  max-height: 30vh;
+  overflow-y: auto;
+}
+
+.confirm-details li{
+  position: relative;
+  padding-left: 1rem;
+  font-size: .85rem;
+  line-height: 1.5;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.confirm-details li + li{
+  margin-top: .4rem;
+}
+
+.confirm-details li::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.confirm-actions{
+  display: flex;
+  gap: .6rem;
+}
+
+.confirm-actions button{
+  flex: 1;
+  padding: .65rem 1rem;
+  border: none;
+  border-radius: var(--btn-radius, 5px);
+  font-family: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.confirm-cancel-btn{
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border) !important;
+}
+
+.confirm-cancel-btn:hover{
+  background: #e9ede9;
+}
+
+.confirm-accept-btn{
+  color: #fff;
+}
+
+.tone-danger  .confirm-accept-btn{ background: var(--danger); }
+.tone-warning .confirm-accept-btn{ background: var(--warning); }
+.tone-primary .confirm-accept-btn{ background: var(--green-700); }
+
+.tone-danger  .confirm-accept-btn:hover{ background: #a80202; }
+.tone-warning .confirm-accept-btn:hover{ background: var(--earth-700); }
+.tone-primary .confirm-accept-btn:hover{ background: var(--green-900); }
+
+.confirm-actions button:focus-visible{
+  outline: 2px solid var(--green-700);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px){
+  .confirm-card{
+    padding: 1.4rem 1.1rem 1.1rem;
+  }
+
+  .confirm-actions{
+    flex-direction: column-reverse;
+  }
+}
