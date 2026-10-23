@@ -225,24 +225,6 @@ async function loadHeadScoreSheet() {
 
   const headerSubjects = subjects.map((s) => `<th>${escapeHtml(s)}</th>`).join("");
 
-  const bodyRows = rows.map((row, index) => {
-    const subjectCells = subjects.map((subject) => {
-      const found = row.studentMarks.find((m) => m.subject === subject);
-      return `<td>${found?.marks ?? "-"}</td>`;
-    }).join("");
-
-    return `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${escapeHtml(row.name)}</td>
-        ${subjectCells}
-        <td>${row.total}</td>
-        <td>${row.average}</td>
-        <td>${row.position}</td>
-      </tr>
-    `;
-  }).join("");
-
   container.innerHTML = `
     <div class="head-score-sheet-print-area">
       <div class="sheet-header">
@@ -272,12 +254,54 @@ async function loadHeadScoreSheet() {
             <th>Position</th>
           </tr>
         </thead>
-        <tbody>
-          ${bodyRows || `<tr><td colspan="${subjects.length + 5}">No broadsheet data found.</td></tr>`}
-        </tbody>
+        <tbody id="head-score-sheet-body"></tbody>
       </table>
+
+      <div id="headScoreSheetPager"></div>
     </div>
   `;
+
+  /* the whole class is ranked above; the table shows one page of it.
+     The pager is made fresh because its mount was just redrawn. */
+  const tbody = document.getElementById("head-score-sheet-body");
+
+  const renderPage = () => {
+    const page = pager.slice(rows);
+
+    tbody.innerHTML =
+      headScoreSheetRowsHtml(page.rows, page.offset, subjects) ||
+      `<tr><td colspan="${subjects.length + 5}">No broadsheet data found.</td></tr>`;
+  };
+
+  const pager = window.createTablePager({
+    mountId: "headScoreSheetPager",
+    noun: "student",
+    pageSize: 50,
+    onChange: renderPage
+  });
+
+  renderPage();
+}
+
+/* numbered by place in the whole class, not in the page */
+function headScoreSheetRowsHtml(rows, offset, subjects) {
+  return rows.map((row, index) => {
+    const subjectCells = subjects.map((subject) => {
+      const found = row.studentMarks.find((m) => m.subject === subject);
+      return `<td>${found?.marks ?? "-"}</td>`;
+    }).join("");
+
+    return `
+      <tr>
+        <td>${offset + index + 1}</td>
+        <td>${escapeHtml(row.name)}</td>
+        ${subjectCells}
+        <td>${row.total}</td>
+        <td>${row.average}</td>
+        <td>${row.position}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
 /* =====================================
