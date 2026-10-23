@@ -6,6 +6,7 @@ const supabaseAdminBroadsheet = window.supabaseClient;
 const broadMessage = document.getElementById("form-feedback");
 let broadsheetSubjects = [];
 let broadsheetRows = [];
+let broadsheetPager = null;
 let broadsheetMeta = {
   className: "",
   termName: "",
@@ -26,6 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("print-broadsheet-btn")
     ?.addEventListener("click", printBroadsheet);
+
+  broadsheetPager = window.createTablePager({
+    mountId: "broadsheetPager",
+    noun: "student",
+    pageSize: 50,
+    onChange: renderBroadsheetTable
+  });
 });
 
 /* =====================================
@@ -350,6 +358,8 @@ async function loadBroadsheetData() {
       lastTotal = row.total;
     });
 
+    // a newly loaded class/term starts on page 1
+    broadsheetPager?.reset();
     renderBroadsheetTable();
   } catch (err) {
     console.error("Unexpected broadsheet error:", err);
@@ -385,6 +395,7 @@ function renderBroadsheetTable() {
   tableHead.innerHTML = headHtml;
 
   if (!broadsheetRows.length) {
+    broadsheetPager?.slice(broadsheetRows);
     tableBody.innerHTML = `
       <tr>
         <td colspan="${broadsheetSubjects.length + 4}">
@@ -395,12 +406,22 @@ function renderBroadsheetTable() {
     return;
   }
 
-  tableBody.innerHTML = "";
+  /* only the current page is drawn; printing uses every row */
+  const page = broadsheetPager
+    ? broadsheetPager.slice(broadsheetRows)
+    : { rows: broadsheetRows, offset: 0 };
 
-  broadsheetRows.forEach((row, index) => {
-    let html = `
+  tableBody.innerHTML = broadsheetRowsHtml(page.rows, page.offset);
+}
+
+/* numbered by place in the whole sheet, not in the page */
+function broadsheetRowsHtml(rows, offset = 0) {
+  let html = "";
+
+  rows.forEach((row, index) => {
+    html += `
       <tr>
-        <td>${index + 1}</td>
+        <td>${offset + index + 1}</td>
         <td class="student-name-cell">${escapeHtml(row.student_name)}</td>
     `;
 
@@ -414,9 +435,9 @@ function renderBroadsheetTable() {
         <td><strong>${formatPosition(row.position)}</strong></td>
       </tr>
     `;
-
-    tableBody.innerHTML += html;
   });
+
+  return html;
 }
 
 /* =====================================
@@ -461,6 +482,11 @@ function printBroadsheet() {
     }, 4000);
     return;
   }
+
+  /* the screen shows one page; the printout gets every student */
+  const printTable = table.cloneNode(true);
+  const printBody = printTable.querySelector("#broadsheet-table-body");
+  if (printBody) printBody.innerHTML = broadsheetRowsHtml(broadsheetRows);
 
   // Capture header values
   const className = broadsheetMeta.className || "-";
@@ -603,7 +629,7 @@ function printBroadsheet() {
           </div>
         </div>
 
-        ${table.outerHTML}
+        ${printTable.outerHTML}
 
       </body>
     </html>
