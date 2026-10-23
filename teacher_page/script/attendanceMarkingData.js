@@ -241,7 +241,7 @@ async function markAttendance(studentId, status) {
 /* =====================================
    RENDER STUDENTS
 ===================================== */
-function renderStudents(students) {
+function renderStudents(students, { keepMarks = false } = {}) {
   const container = document.getElementById("mark-list-attendance");
 
   if (!container) {
@@ -249,13 +249,17 @@ function renderStudents(students) {
     return;
   }
 
+  /* a re-render from a live update keeps what the teacher already marked;
+     a fresh load of the list starts unmarked */
+  const previousStatus = keepMarks ? attendanceStatus : {};
+
   container.innerHTML = `<div id="students-wrapper"></div>`;
   attendanceStatus = {};
 
   const wrapper = document.getElementById("students-wrapper");
 
   students.forEach((student, index) => {
-    attendanceStatus[student.id] = null;
+    attendanceStatus[student.id] = previousStatus[student.id] || null;
 
     const row = document.createElement("div");
     row.className = "student-row";
@@ -271,6 +275,12 @@ function renderStudents(students) {
 
     const presentBtn = row.querySelector(".present");
     const absentBtn = row.querySelector(".absent");
+
+    if (attendanceStatus[student.id] === "Present") {
+      presentBtn.classList.add("active-present");
+    } else if (attendanceStatus[student.id] === "Absent") {
+      absentBtn.classList.add("active-absent");
+    }
 
     presentBtn.onclick = () => {
       attendanceStatus[student.id] = "Present";
@@ -369,7 +379,7 @@ function listenForNewStudents() {
             totalEl.innerText = selectedStudents.length;
           }
 
-          renderStudents(selectedStudents);
+          renderStudents(selectedStudents, { keepMarks: true });
           // console.log("✅ New student added:", newStudent);
         }
       }
@@ -403,9 +413,21 @@ function updateCounts() {
 
   const saveBtn = document.getElementById("save-attendance-btn");
   if (saveBtn) {
+    const unmarked = countUnmarkedStudents();
+
+    /* every student needs Present or Absent before the day can be saved,
+       and an empty class has nothing to save */
     saveBtn.disabled =
-      attendanceIsLocked() || totalMarked !== selectedStudents.length;
+      attendanceIsLocked() || !selectedStudents.length || unmarked > 0;
+
+    saveBtn.innerText = unmarked > 0
+      ? `Save Attendance (${unmarked} unmarked)`
+      : "Save Attendance";
   }
+}
+
+function countUnmarkedStudents() {
+  return selectedStudents.filter((student) => !attendanceStatus[student.id]).length;
 }
 
 /* =====================================
@@ -483,10 +505,21 @@ async function saveAttendance() {
     return;
   }
 
+  const unmarked = countUnmarkedStudents();
+  if (!selectedStudents.length || unmarked > 0) {
+    attendaceFeedBack.classList.add("show-message", "error");
+    attendaceFeedBack.innerHTML = selectedStudents.length
+      ? `Mark all students first (${unmarked} unmarked)`
+      : "No students to mark";
+    setTimeout(()=>{
+      attendaceFeedBack.classList.remove("show-message", "error");
+    }, 3000);
+    return;
+  }
+
   const formattedDate = new Date(dateInput.value).toISOString().split("T")[0];
 
   const records = selectedStudents
-    .filter((student) => attendanceStatus[student.id])
     .map((student) => ({
       student_id: student.id,
       class_id: currentClassId,
