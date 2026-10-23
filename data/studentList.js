@@ -68,10 +68,11 @@ async function refreshStudentViews() {
   const selectedClass = document.getElementById("filter-class")?.value || "";
   const searchName = document.getElementById("search-by-name")?.value.trim() || "";
 
+  // the admin also stays on the page of the table they were reading
   if (selectedClass || searchName) {
-    await filterStudents();
+    await filterStudents({ keepPage: true });
   } else {
-    await loadStudents();
+    await loadStudents({ keepPage: true });
   }
 
   await loadStudentStats();
@@ -174,7 +175,7 @@ function emptyStudentsRow(message) {
 // ─────────────────────────────────────
 // Load Students
 // ─────────────────────────────────────
-async function loadStudents() {
+async function loadStudents(options = {}) {
 
   try {
 
@@ -191,21 +192,7 @@ async function loadStudents() {
 
     if (error) throw error;
 
-    const tbody = document.getElementById("studentsTableBody");
-    tbody.innerHTML = "";
-
-    if (!data.length) {
-      tbody.innerHTML = emptyStudentsRow("No students found");
-      return;
-    }
-
-    sortStudentsByName(data).forEach(student => {
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = studentRowHtml(student);
-      tbody.appendChild(tr);
-
-    });
+    renderStudentsTable(data, options);
 
   } catch (err) {
     console.error("Load students error:", err);
@@ -269,7 +256,7 @@ async function deleteStudent(id) {
 
     await deleteStoredStudentPicture(student?.picture_url);
 
-    loadStudents();
+    loadStudents({ keepPage: true });
 
   } catch (err) {
 
@@ -821,7 +808,9 @@ document
   .getElementById("search-by-name")
   .addEventListener("input", filterStudents);
 
-async function filterStudents() {
+// also the click/input listener, so `options` can be the DOM event: a new
+// filter or search starts again from page 1
+async function filterStudents(options = {}) {
 
   const selectedClass =
     document.getElementById("filter-class").value;
@@ -853,7 +842,7 @@ async function filterStudents() {
 
     if (error) throw error;
 
-    renderStudentsTable(data);
+    renderStudentsTable(data, options);
 
   } catch (err) {
 
@@ -864,18 +853,46 @@ async function filterStudents() {
 }
 
 
-function renderStudentsTable(students) {
+// ─────────────────────────────────────
+// Table Pagination
+// The whole (filtered) list is loaded and sorted by name here, then shown
+// one page at a time, so paging never changes the order.
+// ─────────────────────────────────────
+let studentsTableRows = [];
+let studentsPager = null;
+
+function renderStudentsTable(students, options = {}) {
+
+  studentsTableRows = sortStudentsByName(students || []);
+
+  studentsPager ??= window.createTablePager({
+    mountId: "studentsPager",
+    noun: "student",
+    pageSize: 25,
+    onChange: renderStudentsPage
+  });
+
+  if (options.keepPage !== true) studentsPager.reset();
+
+  renderStudentsPage();
+
+}
+
+function renderStudentsPage() {
 
   const tbody = document.getElementById("studentsTableBody");
+  if (!tbody) return;
+
+  const { rows } = studentsPager.slice(studentsTableRows);
 
   tbody.innerHTML = "";
 
-  if (!students.length) {
+  if (!rows.length) {
     tbody.innerHTML = emptyStudentsRow("No students found");
     return;
   }
 
-  sortStudentsByName(students).forEach(student => {
+  rows.forEach(student => {
 
     const tr = document.createElement("tr");
     tr.innerHTML = studentRowHtml(student);
