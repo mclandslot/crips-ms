@@ -1,0 +1,523 @@
+const supabaseAdminMerit = window.supabaseClient;
+
+/* =====================================
+   GLOBAL STATE
+===================================== */
+const meritMessage = document.getElementById("form-feedback");
+
+let meritRows = [];
+let meritPager = null;
+// the Class column only earns its space when several classes are mixed together
+let meritShowClassColumn = false;
+let meritMeta = {
+  className: "",
+  termName: "",
+  academicYear: ""
+};
+
+/* =====================================
+   INIT
+===================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  loadClassesForMerit();
+  loadTermsForMerit();
+
+  document
+    .getElementById("load-merit-btn")
+    ?.addEventListener("click", loadMeritOrder);
+
+  document
+    .getElementById("print-merit-btn")
+    ?.addEventListener("click", printMeritOrder);
+
+  meritPager = window.createTablePager({
+    mountId: "meritPager",
+    noun: "student",
+    pageSize: 50,
+    onChange: renderMeritTable
+  });
+});
+
+/* =====================================
+   HELPERS
+===================================== */
+function meritFeedback(text) {
+  if (!meritMessage) return;
+
+  meritMessage.classList.add("show-message", "error");
+  meritMessage.innerHTML = text;
+
+  setTimeout(() => {
+    meritMessage.classList.remove("show-message", "error");
+  }, 4000);
+}
+
+function escapeMeritHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function meritColSpan() {
+  return meritShowClassColumn ? 5 : 4;
+}
+
+/* the inline style travels with the markup into the print window */
+function applyMeritClassColumn() {
+  const header = document.querySelector(".merit-table .merit-class-col");
+  if (header) header.style.display = meritShowClassColumn ? "" : "none";
+}
+
+function formatMeritPosition(num) {
+  if (!num) return "-";
+
+  const j = num % 10;
+  const k = num % 100;
+
+  if (j === 1 && k !== 11) return `${num}ST`;
+  if (j === 2 && k !== 12) return `${num}ND`;
+  if (j === 3 && k !== 13) return `${num}RD`;
+  return `${num}TH`;
+}
+
+/* =====================================
+   LOAD CLASSES
+===================================== */
+async function loadClassesForMerit() {
+  const select = document.getElementById("merit-class");
+  if (!select) return;
+
+  select.innerHTML = `<option value="">Loading classes...</option>`;
+
+  const { data, error } = await supabaseAdminMerit
+    .from("classes")
+    .select("id, class_name")
+    .order("class_name", { ascending: true });
+
+  if (error) {
+    console.error("Error loading classes:", error.message);
+    select.innerHTML = `<option value="">Failed to load classes</option>`;
+    return;
+  }
+
+  select.innerHTML = `
+    <option value="">Select class</option>
+    <option value="all">All Classes (whole school)</option>
+  `;
+
+  (data || []).forEach((cls) => {
+    const option = document.createElement("option");
+    option.value = cls.id;
+    option.textContent = cls.class_name || "Unnamed Class";
+    select.appendChild(option);
+  });
+}
+
+/* =====================================
+   LOAD ACADEMIC YEARS + TERMS
+   the term list follows the picked year
+===================================== */
+async function loadTermsForMerit() {
+  await window.termRoster.bindYearTermSelects("merit-year", "merit-term");
+}
+
+/* =====================================
+   LOAD ORDER OF MERIT
+===================================== */
+async function loadMeritOrder() {
+  const classSelect = document.getElementById("merit-class");
+  const termSelect = document.getElementById("merit-term");
+  const tableBody = document.getElementById("merit-table-body");
+
+  if (!classSelect || !termSelect || !tableBody) return;
+
+  const classId = classSelect.value;
+  const termId = termSelect.value;
+  const academicYearId = document.getElementById("merit-year")?.value || "";
+
+  if (!classId || !academicYearId || !termId) {
+    meritFeedback("Please select class, academic year and term");
+    return;
+  }
+
+  const allClasses = classId === "all";
+  const selectedTermOption = termSelect.options[termSelect.selectedIndex];
+
+  meritShowClassColumn = allClasses;
+  applyMeritClassColumn();
+
+  meritMeta = {
+    className: allClasses
+      ? "All Classes"
+      : (classSelect.options[classSelect.selectedIndex]?.textContent || "-"),
+    termName: selectedTermOption?.dataset.termName || "-",
+    academicYear: selectedTermOption?.dataset.academicYear || "-"
+  };
+
+  updateMeritHeader();
+
+  tableBody.innerHTML = `<tr><td colspan="4">Loading order of merit...</td></tr>`;
+
+  try {
+    /* students as they stood in that term. A pupil who has since
+       completed still belongs on a past term's merit list, so the
+       "Complete" filter only applies to today's class list */
+    let students = [];
+
+    try {
+      students = await window.termRoster.loadTermStudents({
+        classId: allClasses ? "" : classId,
+        termId,
+        academicYearId,
+        select: "id, surname, first_name, class_id, classes (class_name)",
+        includeCurrent: (query) => query.not("status", "ilike", "Complete")
+      });
+    } catch (studentsError) {
+      console.error("Error loading students:", studentsError.message);
+      tableBody.innerHTML = `<tr><td colspan="4">Failed to load students</td></tr>`;
+      return;
+    }
+
+    if (!students || students.length === 0) {
+      meritRows = [];
+      tableBody.innerHTML = `<tr><td colspan="4">No students found</td></tr>`;
+      updateMeritSummary();
+      return;
+    }
+
+    /* marks for the term */
+    let marksQuery = supabaseAdminMerit
+      .from("student_marks")
+      .select("student_id, class_id, subject, marks")
+      .eq("term_id", termId);
+
+    if (!allClasses) marksQuery = marksQuery.eq("class_id", classId);
+
+    const { data: marks, error: marksError } = await marksQuery;
+
+    if (marksError) {
+      console.error("Error loading marks:", marksError.message);
+      tableBody.innerHTML = `<tr><td colspan="4">Failed to load marks</td></tr>`;
+      return;
+    }
+
+    /* total + subject count per student, and the class the
+       marks were entered in (the pupil may have moved up since) */
+    const totalsMap = new Map();
+
+    (marks || []).forEach((mark) => {
+      const score = Number(mark.marks || 0);
+      const entry = totalsMap.get(mark.student_id) || { total: 0, subjects: 0 };
+
+      entry.total += Number.isNaN(score) ? 0 : score;
+      entry.subjects += 1;
+      entry.classId = entry.classId || mark.class_id;
+
+      totalsMap.set(mark.student_id, entry);
+    });
+
+    const classNames = new Map(
+      [...classSelect.options].map((option) => [option.value, option.textContent.trim()])
+    );
+
+    meritRows = students.map((student) => {
+      const entry = totalsMap.get(student.id) || { total: 0, subjects: 0 };
+
+      return {
+        name: studentFullName(student) || "-",
+        className:
+          classNames.get(student.term_class_id || entry.classId) ||
+          student.classes?.class_name ||
+          "-",
+        total: entry.total,
+        subjects: entry.subjects,
+        average: entry.subjects ? (entry.total / entry.subjects).toFixed(2) : "0.00",
+        position: "-"
+      };
+    });
+
+    /* order of merit: highest total first, name breaks ties */
+    meritRows.sort((a, b) => {
+      if (b.total !== a.total) return b.total - a.total;
+      return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+    });
+
+    let currentPosition = 0;
+    let lastTotal = null;
+
+    meritRows.forEach((row, index) => {
+      if (row.total !== lastTotal) {
+        currentPosition = index + 1;
+        lastTotal = row.total;
+      }
+      row.position = currentPosition;
+    });
+
+    // a newly loaded class/term starts on page 1
+    meritPager?.reset();
+    renderMeritTable();
+    updateMeritSummary();
+  } catch (err) {
+    console.error("Unexpected order of merit error:", err);
+    tableBody.innerHTML = `<tr><td colspan="4">Unexpected error occurred</td></tr>`;
+  }
+}
+
+/* =====================================
+   RENDER TABLE
+===================================== */
+function renderMeritTable() {
+  const tableBody = document.getElementById("merit-table-body");
+  if (!tableBody) return;
+
+  if (!meritRows.length) {
+    meritPager?.slice(meritRows);
+    tableBody.innerHTML = `<tr><td colspan="4">No order of merit data found</td></tr>`;
+    return;
+  }
+
+  /* only the current page is drawn; printing uses every row */
+  const page = meritPager
+    ? meritPager.slice(meritRows)
+    : { rows: meritRows, offset: 0 };
+
+  tableBody.innerHTML = meritRowsHtml(page.rows, page.offset);
+}
+
+/* numbered by place in the whole list, not in the page */
+function meritRowsHtml(rows, offset = 0) {
+  return rows
+    .map(
+      (row, index) => `
+      <tr>
+        <td>${offset + index + 1}</td>
+        <td class="student-name-cell">${escapeMeritHtml(row.name)}</td>
+        ${meritShowClassColumn ? `<td>${escapeMeritHtml(row.className)}</td>` : ""}
+        <td><strong>${row.total}</strong></td>
+        <td><strong>${formatMeritPosition(row.position)}</strong></td>
+      </tr>
+    `
+    )
+    .join("");
+}
+
+/* =====================================
+   HEADER + SUMMARY
+===================================== */
+function updateMeritHeader() {
+  const classEl = document.getElementById("merit-display-class");
+  const termEl = document.getElementById("merit-display-term");
+  const yearEl = document.getElementById("merit-display-academic-year");
+
+  if (classEl) classEl.textContent = meritMeta.className || "-";
+  if (termEl) termEl.textContent = meritMeta.termName || "-";
+  if (yearEl) yearEl.textContent = meritMeta.academicYear || "-";
+}
+
+function updateMeritSummary() {
+  const summaryEl = document.getElementById("merit-summary");
+  if (!summaryEl) return;
+
+  if (!meritRows.length) {
+    summaryEl.textContent = "";
+    return;
+  }
+
+  const totals = meritRows.map((row) => row.total);
+  const sum = totals.reduce((a, b) => a + b, 0);
+  const average = (sum / totals.length).toFixed(2);
+
+  summaryEl.innerHTML = `
+    <strong>Total Students:</strong> ${meritRows.length} |
+    <strong>Class Average:</strong> ${average} |
+    <strong>Highest:</strong> ${Math.max(...totals)} |
+    <strong>Lowest:</strong> ${Math.min(...totals)}
+  `;
+}
+
+/* =====================================
+   PRINT ORDER OF MERIT (A4 PORTRAIT)
+===================================== */
+/* the screen shows one page; the printout gets every student */
+function meritPrintTableHtml() {
+  const wrapper = document.querySelector(".merit-table-wrapper");
+  if (!wrapper) return "";
+
+  const copy = wrapper.cloneNode(true);
+  const body = copy.querySelector("#merit-table-body");
+  if (body) body.innerHTML = meritRowsHtml(meritRows);
+
+  return copy.innerHTML;
+}
+
+function printMeritOrder() {
+  const printArea = document.getElementById("merit-print-area");
+
+  if (!printArea || !meritRows.length) {
+    meritFeedback("No order of merit loaded to print");
+    return;
+  }
+
+  /* the print window is a blank document, so a relative logo path has no base
+     to resolve against - .src is already absolute */
+  const logoSrc =
+    document.querySelector("#merit-print-area .school-img")?.src || "";
+
+  const printWindow = window.open("", "_blank", "width=1000,height=800");
+
+  if (!printWindow) {
+    alert("Unable to open print window.");
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Order of Merit</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 15px;
+            color: #000;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+
+          /* --- header: same layout as the other printed sheets --- */
+          .terminal-card-header-details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+          }
+
+          .school-details-middle {
+            display: flex;
+            flex-direction: column;
+            gap: .1rem;
+            text-align: center;
+            padding: 0 1rem;
+          }
+
+          .school-details-middle h2,
+          .school-details-middle h3,
+          .school-details-middle h4 { margin: 0; }
+
+          .school-details-middle h2 { font-size: 1.8rem; }
+          .school-details-middle h3 { font-size: 1.5rem; }
+          .school-details-middle h4 { font-size: 1.3rem; }
+
+          /* the source PNG is 1056x992, so it MUST be constrained here or it
+             prints at natural size and swallows the page */
+          .school-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            display: block;
+            flex-shrink: 0;
+          }
+
+          .sheet-logo-balance {
+            width: 100px;
+            flex-shrink: 0;
+          }
+
+          .class-in-information {
+            display: flex;
+            gap: 5rem;
+            align-items: flex-start;
+            justify-content: center;
+            margin-block: 1rem;
+            padding: 0 1.5rem;
+          }
+
+          .box-left-in-class h4 {
+            font-size: 15px;
+            margin: 0 0 .3rem;
+          }
+
+          .merit-summary {
+            margin: 0 0 10px;
+            font-size: 13px;
+            text-align: center;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            font-size: 14px;
+            text-align: center;
+          }
+
+          th {
+            background: #fff;
+          }
+
+          .student-name-cell {
+            text-align: left;
+          }
+
+          @page {
+            size: A4 portrait;
+            margin: 10mm;
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="terminal-card-header-details">
+          ${logoSrc ? `<img src="${logoSrc}" alt="logo" class="school-img">` : ""}
+          <div class="school-details-middle">
+            <h3>CRIG PRIMARY SCHOOL</h3>
+            <h4>ORDER OF MERIT</h4>
+          </div>
+          <span class="sheet-logo-balance"></span>
+        </div>
+
+        <div class="class-in-information">
+          <div class="box-left-in-class">
+            <h4>ACADEMIC YEAR: <span>${escapeMeritHtml(meritMeta.academicYear)}</span></h4>
+            <h4>TERM: <span>${escapeMeritHtml(meritMeta.termName)}</span></h4>
+          </div>
+
+          <div class="box-left-in-class">
+            <h4>CLASS: <span>${escapeMeritHtml(meritMeta.className)}</span></h4>
+          </div>
+        </div>
+
+        <p class="merit-summary">${document.getElementById("merit-summary")?.innerHTML || ""}</p>
+
+        ${meritPrintTableHtml()}
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  /* Wait for the logo to finish decoding, otherwise print() can fire against a
+     zero-height image and the header prints misaligned. */
+  const images = Array.from(printWindow.document.images);
+  Promise.all(
+    images.map((img) =>
+      img.complete
+        ? Promise.resolve()
+        : new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          })
+    )
+  ).then(() => {
+    printWindow.focus();
+    printWindow.print();
+  });
+}
